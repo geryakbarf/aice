@@ -1,0 +1,131 @@
+<%- include('./partials/header.html') %>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <!-- Left navbar links -->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            </li>
+        </ul>
+
+        <!-- Right navbar links -->
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                </a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+                <a href="/admin/logout" class="nav-link">Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+    <%- include('./partials/left-navbar.html') %>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid" id="form-bagian">
+                <!-- Small boxes (Stat box) -->
+                <div class="row">
+                    <div class="col">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Tambah Data Bagian Divisi Baru</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="nama">Nama</label>
+                                    <input type="name" class="form-control" name="nama" id="nama"
+                                           placeholder="Masukkan Nama Bagian" v-model="form.nama" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Bagian Dari Divisi Mana ?</label>
+                                    <select class="form-control" name="divisi" id="divisi" v-model="form.id_divisi"
+                                            required>
+                                        <option value="0" disabled selected v-if="divisi.length === 0">Belum ada data
+                                            divisi
+                                        </option>
+                                        <option value="0" disabled selected v-if="divisi.length > 0">Silahkan pilih dari
+                                            divisi mana
+                                        </option>
+                                        <option v-for="data in divisi" v-bind:value="data.id"> {{data.nama}}</option>
+                                    </select>
+                                </div>
+                                <div class="bootstrap-timepicker">
+                                    <div class="form-group">
+                                        <label>Jam Masuk (Format 24 Jam)</label>
+                                        <div class="input-group date">
+                                            <input type="time" class="form-control" name="jam_masuk" id="jam_masuk"
+                                                   required v-model="form.jam_masuk"/>
+                                        </div>
+                                        <!-- /.input group -->
+                                    </div>
+                                    <!-- /.form group -->
+                                </div>
+                                <div class="bootstrap-timepicker">
+                                    <div class="form-group">
+                                        <label>Jam Keluar (Format 24 Jam)</label>
+                                        <div class="input-group date">
+                                            <input type="time" class="form-control" name="jam_keluar"
+                                                   id="jam_keluar" v-model="form.jam_keluar" required/>
+                                        </div>
+                                        <!-- /.input group -->
+                                    </div>
+                                    <!-- /.form group -->
+                                </div>
+                                <!-- select -->
+                                <div class="form-group">
+                                    <label>Apakah Bagian Ini Memiliki Jam Lembur ?</label>
+                                    <select class="form-control" name="lembur" id="lembur" v-model="form.lembur"
+                                            required>
+                                        <option value="" disabled selected> Silahkan pilih</option>
+                                        <option value="Ya">Ya</option>
+                                        <option value="Tidak">Tidak</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Jobdesk (Opsional)</label>
+                                    <textarea name="jobdesk" id="jobdesk" class="form-control" rows="5"
+                                              placeholder="Masukkan jobdesk dari bagian ini"
+                                              spellcheck="false" v-model="form.jobdesk"></textarea>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary" v-on:click="onSave()">Submit</button>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<footer class="main-footer">
+    <strong>Copyright &copy; 2021 Gery Akbar Fauzi - UNIKOM</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+        <b>Version</b> 1.0
+    </div>
+</footer>
+<%- include('./partials/footer.html') %>
