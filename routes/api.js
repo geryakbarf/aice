@@ -22,4 +22,8 @@ router.post('/tambah-karyawan', Karyawan.tambahKaryawan);
 router.get('/get-karyawan/:nip', Karyawan.getKaryawan);
 router.put('/update-karyawan', Karyawan.updateKaryawan);
 
+//Area API Android
+router.post('/android/login', Karyawan.loginKaryawan)
+router.post('/android/karyawan', Karyawan.registerKaryawan)
+
 module.exports = router;
