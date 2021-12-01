@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const fetch = require("node-fetch");
 const Divisi = require('../controller/divisi');
 const Bagian = require('../controller/bagian');
 const Karyawan = require('../controller/karyawan');
-const DB = require('../controller/config');
 const auth = require('../middleware/sess_adm_auth');
+const baseURL = "http://localhost:3000"
 
 router.get("/login", (req, res) => {
     const loadJS = [
@@ -72,6 +73,48 @@ router.get('/edit-divisi/:id', (req, res) => {
 router.get('/edit-bagian', Bagian.renderEditBagianPage);
 
 router.get("/bagian", Bagian.renderAllBagianPage);
+
+router.get("/absensi", async (req, res) => {
+    const routePath = "/absensi"
+    const photo = "http://localhost:3000/assets/uploads" + req.session.photoAdmin;
+    const nama = req.session.namaAdmin;
+    const loadCSS = [
+        {src: "https://cdn.datatables.net/1.11.2/css/dataTables.bootstrap4.min.css"},
+        {src: "https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap4.min.css"},
+        {src: "https://cdn.datatables.net/buttons/2.0.0/css/buttons.bootstrap4.min.css"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"}
+    ];
+    const loadJS = [
+        {src: "https://code.jquery.com/jquery-3.6.0.min.js"},
+        {src: "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js"},
+        {src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"},
+        {src: "https://cdn.datatables.net/1.11.2/js/jquery.dataTables.min.js"},
+        {src: "https://cdn.datatables.net/1.11.2/js/dataTables.bootstrap4.min.js"},
+        {src: "https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.js"},
+        {src: "https://cdn.datatables.net/responsive/2.2.9/js/responsive.bootstrap4.min.js"},
+        {src: "https://cdn.datatables.net/buttons/2.0.0/js/buttons.bootstrap4.min.js"},
+        {src: "https://cdn.datatables.net/buttons/2.0.0/js/dataTables.buttons.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"},
+        {src: "/assets/js/form-absensi-main.js"}
+    ];
+    //
+    let absensi = []
+    let result = await fetch(baseURL + '/api/main-absensi')
+    let data = await result.json()
+    if (data.code > 0)
+        absensi = data.data
+    //
+    return res.render('admin/absensi', {
+        title: "Admin - Absensi",
+        routePath,
+        loadJS,
+        absensi,
+        loadCSS,
+        nama,
+        photo
+    })
+})
 
 router.get('/tambah-divisi', (req, res) => {
     const photo = "http://localhost:3000/assets/uploads" + req.session.photoAdmin;

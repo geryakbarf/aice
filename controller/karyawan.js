@@ -122,23 +122,28 @@ const login = async (req, res) => {
     ];
     let connect = DB.config;
     const {email, password} = req.body;
-    //Pengecekan Email
-    connect.query("SELECT * FROM karyawan WHERE email = ?", [email], (err, result, field) => {
-        if (result.length <= 0)
-            return res.render('admin/login', {title: "Admin - Login", loadJS, error: 1})
-    });
-    //Pengecekan akun
-    connect.query("SELECT * FROM karyawan WHERE email = ? AND password = PASSWORD(?)", [email, password], (err, result, field) => {
-        if (result.length > 0) {
-            req.session.isAuthenticated = true;
-            req.session.nipAdmin = result[0].nip;
-            req.session.emailAdmin = result[0].email;
-            req.session.namaAdmin = result[0].nama;
-            req.session.photoAdmin = result[0].photo;
-            return res.redirect('/admin');
-        } else
-            return res.render('admin/login', {title: "Admin - Login", loadJS, error: 2});
-    });
+    try {
+        //Pengecekan Email
+        connect.query("SELECT * FROM karyawan WHERE email = ?", [email], (err, result, field) => {
+            if (result.length <= 0)
+                return res.render('admin/login', {title: "Admin - Login", loadJS, error: 1})
+        });
+        //Pengecekan akun
+        connect.query("SELECT * FROM karyawan WHERE email = ? AND password = PASSWORD(?)", [email, password], (err, result, field) => {
+            if (result.length > 0) {
+                req.session.isAuthenticated = true;
+                req.session.nipAdmin = result[0].nip;
+                req.session.emailAdmin = result[0].email;
+                req.session.namaAdmin = result[0].nama;
+                req.session.photoAdmin = result[0].photo;
+                return res.redirect('/admin');
+            } else
+                return res.render('admin/login', {title: "Admin - Login", loadJS, error: 2});
+        });
+
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 const loginKaryawan = async (req, res) => {

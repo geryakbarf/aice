@@ -4,6 +4,7 @@ const Divisi = require('../controller/divisi');
 const Bagian = require('../controller/bagian');
 const Karyawan = require('../controller/karyawan');
 const Upload = require('../upload');
+const Absensi = require('../controller/absensi')
 
 //Area API Divisi
 router.post('/divisi', Divisi.addDivisi);
@@ -21,6 +22,10 @@ router.post('/upload-image', Upload.uploadImage);
 router.post('/tambah-karyawan', Karyawan.tambahKaryawan);
 router.get('/get-karyawan/:nip', Karyawan.getKaryawan);
 router.put('/update-karyawan', Karyawan.updateKaryawan);
+
+//Area API Main Absensi
+router.get('/main-absensi', Absensi.getMainAbsensi)
+router.post('/main-absensi', Absensi.addMainAbseni)
 
 //Area API Android
 router.post('/android/login', Karyawan.loginKaryawan)
