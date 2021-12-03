@@ -26,15 +26,12 @@
     <%- include('./partials/left-navbar.html') %>
 
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper" id="main-absensi">
+    <div class="content-wrapper" id="detail-absensi">
         <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-2" style="float: right; margin-right: 10px">
-                        <button type="button" class="btn btn-block btn-primary"
-                                v-on:click="addMainAbsensi()">Tambah Absensi Hari ini
-                        </button>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
             </div><!-- /.container-fluid -->
@@ -48,41 +45,63 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Data Absensi</h3>
+                                <h3 class="card-title">Data Absensi Hari <%= tanggal %></h3>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <table id="example2" class="table table-bordered table-hover">
                                     <thead>
                                     <tr>
-                                        <th>Tanggal Absensi</th>
-                                        <th>Jumlah Hadir</th>
-                                        <th>Jumlah Izin</th>
-                                        <th>Jumlah Alfa / Belum Absensi</th>
+                                        <th>NIP</th>
+                                        <th>Nama Karyawan</th>
+                                        <th>Bagian</th>
+                                        <th>Tipe Absensi</th>
+                                        <th>Jam</th>
+                                        <th>Cara Absensi</th>
+                                        <th>Status</th>
+                                        <th>Detail Status</th>
                                         <th>Aksi</th>
-                                        <th>QR</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <% if(locals.absensi) { %>
                                     <% for(data of absensi) { %>
                                     <tr>
-                                        <td><%= new Date(data.tanggal).toLocaleDateString('id-ID', { weekday:"long",
-                                            year:"numeric", month:"short", day:"numeric"}); %>
-                                        </td>
-                                        <td><%= data.jumlah_hadir; %></td>
-                                        <td><%= data.jumlah_izin; %></td>
-                                        <td><% if(data.jumlah_alfa >= 0) { %>
-                                            <%= data.jumlah_alfa %>
+                                        <td><%= data.nip; %></td>
+                                        <td><%= data.nama_karyawan; %></td>
+                                        <td><%= data.nama_bagian; %></td>
+                                        <td><% if(data.tipe_absensi == null) { %>
+                                            -
                                             <% } else { %>
-                                            <%= data.jumlah_karyawan; %>
+                                            <%= data.tipe_absensi; %>
                                             <% } %>
                                         </td>
-                                        <td><a href="/admin/absensi/detail/<%= data.id %>/<%= data.tanggal %>">
-                                            <button type="button" class="btn btn-block btn-primary">Detail</button>
-                                        </a></td>
-                                        <td><a href="/admin/qr-code?id=<%= data.id %>">
-                                            <button type="button" class="btn btn-block btn-primary">QR Code</button>
+                                        <td><% if(data.jam_absensi == null) { %>
+                                            -
+                                            <% } else { %>
+                                            <%= data.jam_absensi; %>
+                                            <% } %>
+                                        </td>
+                                        <td><% if(data.cara_absensi == null) { %>
+                                            -
+                                            <% } else { %>
+                                            <%= data.cara_absensi; %>
+                                            <% } %>
+                                        </td>
+                                        <td><% if(data.status == null) { %>
+                                            Alfa / Belum Absensi
+                                            <% } else { %>
+                                            <%= data.status; %>
+                                            <% } %>
+                                        </td>
+                                        <td><% if(data.detail_status == null) { %>
+                                            Tidak Ada Data
+                                            <% } else { %>
+                                            <%= data.detail_status; %>
+                                            <% } %>
+                                        </td>
+                                        <td><a href="/admin/absensi/detail/<%= data.id_absensi %>">
+                                            <button type="button" class="btn btn-block btn-primary">Aksi</button>
                                         </a></td>
                                     </tr>
                                     <% } %>

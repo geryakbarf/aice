@@ -4,12 +4,8 @@ var app = new Vue({
     methods: {
         addMainAbsensi: async function () {
             try {
-                let json = {
-                    today: this.formatDate()
-                }
                 const res = await fetch('/api/main-absensi', {
                     method: 'POST',
-                    body: JSON.stringify(json),
                     headers: {'Content-Type': "application/json"}
                 });
                 const data = await res.json()
@@ -25,17 +21,6 @@ var app = new Vue({
                 console.log(e)
             }
         },
-        formatDate: function () {
-            let d = new Date(),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2) month = '0' + month;
-            if (day.length < 2) day = '0' + day;
-
-            return [year, month, day].join('-');
-        }
     },
     mounted() {
     }
