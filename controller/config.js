@@ -4,7 +4,8 @@ const config = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
-    database: "aice"
+    database: "aice",
+    timezone:'UTC'
 });
 
 module.exports = {

@@ -261,6 +261,21 @@ router.get('/tambah-bagian', (req, res) => {
     })
 })
 
+router.post('/absensi/qr', (req, res) => {
+    let idAbsensi = req.body.id
+    const loadJS = [
+        {src: "https://code.jquery.com/jquery-3.6.0.min.js"},
+        {src: "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"},
+        {src: "https://cdn.jsdelivr.net/combine/npm/qrcanvas@3,npm/qrcanvas-vue@2"},
+        {src: "/assets/js/form-absensi-qr.js"}
+    ]
+    return res.render('admin/qr', {
+        title: "Admin - QR Code Absensi",
+        loadJS,
+        idAbsensi
+    })
+})
+
 router.get('/logout', (req, res) => {
     delete req.session.isAuthenticated;
     delete req.session.nipAdmin;

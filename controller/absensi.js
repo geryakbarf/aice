@@ -1,4 +1,5 @@
 const DB = require("./config")
+const moment = require("moment");
 
 function formatDate() {
     let d = new Date(),
@@ -10,6 +11,34 @@ function formatDate() {
     if (day.length < 2) day = '0' + day;
 
     return [year, month, day].join('-');
+}
+
+function getTodayTime() {
+    let date_ob = new Date();
+    let date = ("0" + date_ob.getDate()).slice(-2);
+    let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+    let year = date_ob.getFullYear();
+    let hours = date_ob.getHours();
+    let minutes = date_ob.getMinutes();
+    let currentTime = year + "-" + month + "-" + date + " " + hours + ":" + minutes;
+    return currentTime
+}
+
+function getCurrentTime() {
+    let date_ob = new Date();
+    let hours = date_ob.getHours();
+    let minutes = date_ob.getMinutes();
+    let currentTime = hours + ":" + minutes;
+    return currentTime
+}
+
+function getTodayDate() {
+    let date_ob = new Date();
+    let date = ("0" + date_ob.getDate()).slice(-2);
+    let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+    let year = date_ob.getFullYear();
+    let today = year + "-" + month + "-" + date;
+    return today
 }
 
 const getMainAbsensi = async (req, res) => {
@@ -58,6 +87,84 @@ const getDetailAbsensi = async (req, res) => {
     }
 }
 
+const absensiQR = async (req, res) => {
+    const connect = DB.config
+    try {
+        let idBagian = req.body.idBagian
+        let tipeabsensi = null
+        let idAbsensi = req.body.idAbsensi
+        let nip = req.body.nip
+        //query
+        connect.query("SELECT * FROM bagian WHERE id = ?", [idBagian], (err, result, field) => {
+            //Seleksi Jam masuk
+            if (!err) {
+                let jamMasuk = result[0].jam_masuk
+                let jamKeluar = result[0].jam_keluar
+                let jamAbsensi = null
+                let status = null
+                //Pengecekan Apakah absensi masuk atau keluar
+                connect.query("SELECT * FROM detail_absensi WHERE id_absensi = ? AND nip = ?", [idAbsensi, nip], (err1, result1, field1) => {
+                    if (!err1) {
+                        if (result1.length === 1) {
+                            tipeabsensi = "Keluar"
+                            jamAbsensi = jamKeluar
+                        } else if (result1.length === 0) {
+                            tipeabsensi = "Masuk"
+                            jamAbsensi = jamMasuk
+                        } else if (result1.length >= 2) {
+                            return res.json({
+                                code: 0,
+                                message: "Anda sudah tidak bisa melakukan lagi absensi pada hari ini!"
+                            })
+                        }
+                    }//endif
+                    //Pengecekan tanggal absensi
+                    connect.query("SELECT * FROM absensi WHERE id = ?", [idAbsensi], (err2, result2, field2) => {
+                        if (!err2) {
+                            if (moment(result2[0].tanggal).format('YYYY-MM-DD') !== getTodayDate())
+                                return res.json({
+                                    code: 0,
+                                    message: "Tanggal absensi sudah tidak berlaku lagi!"
+                                })
+                            //Pengecekan apakah telat atau tepat
+                            else {
+                                let jamMasukAbsen = new Date(getTodayTime())
+                                jamAbsensi = new Date(getTodayDate() + " " + jamAbsensi)
+                                if (jamMasukAbsen.getTime() <= jamAbsensi.getTime() && tipeabsensi === "Masuk")
+                                    status = "Hadir dengan tepat waktu menggunakan barcode QR"
+                                else if (jamMasukAbsen.getTime() > jamAbsensi.getTime() && tipeabsensi === "Masuk")
+                                    status = "Hadir dengan terlambat menggunakan barcode QR"
+                                else if (jamMasukAbsen.getTime() < jamAbsensi.getTime() && tipeabsensi === "Keluar")
+                                    status = "Absen pulang dengan jam pulang lebih awal dari jadwal"
+                                else if (jamMasukAbsen.getTime() === jamAbsensi.getTime() && tipeabsensi === "Keluar")
+                                    status = "Absen pulang dengan jam pulang tepat waktu"
+                                else if (jamMasukAbsen.getTime() > jamAbsensi.getTime() && tipeabsensi === "Keluar")
+                                    status = "Absen pulang dengan jam pulang melebihi jadwal"
+                            }
+                            //Insert data absensi ke database
+                            connect.query("INSERT INTO detail_absensi VALUES(?,?,null,?,?,'QR',null,null,'Hadir',?)", [idAbsensi, nip, tipeabsensi, getCurrentTime(), status], (err3, result3, field3) => {
+                                if (!err3)
+                                    return res.json({code: 1, message: "Berhasil melakukan absensi!"})
+                                else
+                                    return res.json({
+                                        code: 0,
+                                        message: "Terjadi kesalahan! Periksa internet anda atau hubungi sysadmin"
+                                    })
+                            })
+                        }//endif
+                    })
+                })
+            }//endif
+        })
+    } catch (e) {
+        console.log(e)
+        return res.json({
+            code: 0,
+            message: "Terjadi kesalahan pada sistem!"
+        })
+    }
+}
+
 const addMainAbseni = async (req, res) => {
     const today = formatDate()
     const connect = DB.config
@@ -86,5 +193,6 @@ const addMainAbseni = async (req, res) => {
 module.exports = {
     getMainAbsensi,
     addMainAbseni,
-    getDetailAbsensi
+    getDetailAbsensi,
+    absensiQR
 }

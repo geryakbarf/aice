@@ -160,7 +160,8 @@ const loginKaryawan = async (req, res) => {
                         nama: hasil[0].nama,
                         email: hasil[0].email,
                         id_bagian: hasil[0].id_bagian,
-                        photo: hasil[0].photo
+                        photo: hasil[0].photo,
+                        message: "Berhasil login, selamat datang di Aice Apps!"
                     })
                 } else
                     return res.json({code: 0, message: "Silahkan melengkapi data diri anda"})

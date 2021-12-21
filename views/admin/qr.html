@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= locals.title %></title>
+</head>
+<body>
+<div id="qr-absensi">
+    <center>
+        <h1>QR Generator</h1>
+        <div>
+            <qr-canvas :options="options"></qr-canvas>
+        </div>
+    </center>
+</div>
+<script type="application/javascript">
+    const idAbsensi = <%- JSON.stringify(idAbsensi) %>;
+</script>
+
+</body>
+<%- include('./partials/footer.html') %>
+</html>

@@ -81,9 +81,12 @@
                                         <td><a href="/admin/absensi/detail/<%= data.id %>/<%= data.tanggal %>">
                                             <button type="button" class="btn btn-block btn-primary">Detail</button>
                                         </a></td>
-                                        <td><a href="/admin/qr-code?id=<%= data.id %>">
-                                            <button type="button" class="btn btn-block btn-primary">QR Code</button>
-                                        </a></td>
+                                        <td>
+                                            <form method="post" action="/admin/absensi/qr" target="_blank">
+                                                <input type="hidden" name="id" value="<%= data.id %>">
+                                                <button type="submit" class="btn btn-block btn-primary">QR Code</button>
+                                            </form>
+                                            </a></td>
                                     </tr>
                                     <% } %>
                                     <% } %>

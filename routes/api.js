@@ -29,6 +29,7 @@ router.post('/main-absensi', Absensi.addMainAbseni)
 
 //Area Detail Absensi
 router.get('/detail-absensi/:id', Absensi.getDetailAbsensi)
+router.post('/detail-absensi/qr', Absensi.absensiQR)
 
 //Area API Android
 router.post('/android/login', Karyawan.loginKaryawan)
