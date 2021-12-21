@@ -45,7 +45,7 @@ const getMainAbsensi = async (req, res) => {
     let connect = DB.config
     try {
         //Query SELECT
-        connect.query("SELECT absensi.tanggal, absensi.id, COUNT(IF(detail_absensi.status='Hadir',1,null)) AS jumlah_hadir, COUNT(IF(detail_absensi.status='Izin',1,null)) AS jumlah_izin, COUNT(IF(detail_absensi.status='Hadir',1,null)) + COUNT(IF(detail_absensi.status='Izin',1,null)) - (SELECT COUNT(*)) AS jumlah_alfa, (SELECT COUNT(*) FROM karyawan) AS jumlah_karyawan FROM absensi LEFT JOIN detail_absensi ON absensi.id = detail_absensi.id_absensi GROUP BY absensi.id", (err, result, field) => {
+        connect.query("SELECT absensi.tanggal, absensi.id, COUNT(IF(detail_absensi.status='Hadir' AND detail_absensi.tipe_absensi='Masuk',1,null)) AS jumlah_hadir, COUNT(IF(detail_absensi.status='Izin' AND detail_absensi.tipe_absensi='Izin',1,null)) AS jumlah_izin, (SELECT COUNT(*) FROM karyawan) - COUNT(IF(detail_absensi.status='Hadir' AND detail_absensi.tipe_absensi='Masuk',1,null)) + COUNT(IF(detail_absensi.status='Izin' AND detail_absensi.tipe_absensi='Izin',1,null)) AS jumlah_alfa, (SELECT COUNT(*) FROM karyawan) AS jumlah_karyawan FROM absensi LEFT JOIN detail_absensi ON absensi.id = detail_absensi.id_absensi GROUP BY absensi.id ORDER BY absensi.tanggal DESC", (err, result, field) => {
             if (!err)
                 return res.json({
                     code: 1,

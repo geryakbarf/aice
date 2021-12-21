@@ -55,6 +55,7 @@
                                 <table id="example2" class="table table-bordered table-hover">
                                     <thead>
                                     <tr>
+                                        <th>No</th>
                                         <th>Tanggal Absensi</th>
                                         <th>Jumlah Hadir</th>
                                         <th>Jumlah Izin</th>
@@ -65,14 +66,16 @@
                                     </thead>
                                     <tbody>
                                     <% if(locals.absensi) { %>
+                                    <% let i = 1; %>
                                     <% for(data of absensi) { %>
                                     <tr>
+                                        <td><%= i; %></td>
                                         <td><%= new Date(data.tanggal).toLocaleDateString('id-ID', { weekday:"long",
                                             year:"numeric", month:"short", day:"numeric"}); %>
                                         </td>
                                         <td><%= data.jumlah_hadir; %></td>
                                         <td><%= data.jumlah_izin; %></td>
-                                        <td><% if(data.jumlah_alfa >= 0) { %>
+                                        <td><% if(data.jumlah_alfa > 0) { %>
                                             <%= data.jumlah_alfa %>
                                             <% } else { %>
                                             <%= data.jumlah_karyawan; %>
@@ -88,6 +91,7 @@
                                             </form>
                                             </a></td>
                                     </tr>
+                                    <% i++; %>
                                     <% } %>
                                     <% } %>
                                     </tbody>
