@@ -8,11 +8,15 @@ const auth = require('../middleware/sess_adm_auth');
 const baseURL = "http://localhost:3000"
 
 router.get("/login", (req, res) => {
-    const loadJS = [
-        {src: "https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/js/adminlte.min.js"},
-        {src: "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"}
-    ];
-    return res.render('admin/login', {title: "Admin - Login", loadJS})
+    if (req.session.isAuthenticated)
+        return res.redirect('/admin')
+    else {
+        const loadJS = [
+            {src: "https://cdn.jsdelivr.net/npm/admin-lte@3.1/dist/js/adminlte.min.js"},
+            {src: "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"}
+        ];
+        return res.render('admin/login', {title: "Admin - Login", loadJS})
+    }
 })
 
 router.post("/login", Karyawan.login);

@@ -1,6 +1,54 @@
 const DB = require('./config');
 const {error} = require("winston");
 
+const loginHR = async (req, res) => {
+    let connect = DB.config;
+    const {email, password} = req.body;
+    try {
+        //Pengecekan Email
+        connect.query("SELECT * FROM karyawan WHERE email = ?", [email], (err, result, field) => {
+            if (result.length <= 0)
+                return res.json({
+                    code: 0,
+                    message: "Alamat email tidak terdaftar!"
+                })
+            else {
+                //Pengecekan akun
+                connect.query("SELECT * FROM karyawan WHERE email = ? AND password = PASSWORD(?)", [email, password], (err1, result1, field1) => {
+                    if (result1.length > 0) {
+                        //Pengecekan apakah hr atau bukan
+                        connect.query("SELECT divisi.nama FROM divisi JOIN bagian ON bagian.id_divisi = divisi.id JOIN karyawan ON karyawan.id_bagian = bagian.id WHERE bagian.id = ?", [result1[0].id_bagian], (err2, result2, field2) => {
+                            if (result2.length > 0 && result2[0].nama === "HR") {
+                                req.session.isHRAuthenticated = true;
+                                req.session.nipHR = result1[0].nip;
+                                req.session.bagianHR = result1[0].id_bagian;
+                                req.session.emailHR = result1[0].email;
+                                req.session.namaHR = result1[0].nama;
+                                req.session.photoHR = result1[0].photo;
+                                return res.json({
+                                    code: 1,
+                                    message: "Selamat datang! Anda berhasil login!"
+                                })
+                            } else
+                                return res.json({
+                                    code: 0,
+                                    message: "Maaf, hanya HR yang bisa masuk ke menu ini!"
+                                })
+                        })
+                    } else
+                        return res.json({
+                            code: 0,
+                            message: "Password anda salah!"
+                        })
+                });
+            }
+        });
+    } catch (e) {
+        console.log(e)
+    }
+
+}
+
 const renderKaryawanPage = async (req, res) => {
     let connect = DB.config;
     const routePath = "/karyawan";
@@ -38,33 +86,39 @@ const renderKaryawanPage = async (req, res) => {
 }
 
 const tambahKaryawan = async (req, res) => {
-    let data = req.body;
-    let nama = null;
-    let email = null;
-    let jabatan = null;
-    let photo = null;
-    //
-    if (req.body.nama)
-        nama = data.nama;
-    if (req.body.email)
-        email = data.email;
-    if (req.body.jabatan)
-        jabatan = data.jabatan;
-    if (req.body.photo)
-        photo = data.photo;
-    //
-    let connect = DB.config;
-    //Pengecekan nip
-    connect.query("SELECT * FROM karyawan WHERE nip = ?", [data.nip], (err, result, field) => {
-        if (result.length > 0)
-            return res.json({code: 0, message: "Data nip sudah ada!"})
-    });
-    connect.query("INSERT INTO karyawan(nip,id_bagian,nama,email,jabatan,photo) VALUES(?,?,?,?,?,?)", [data.nip, data.id_bagian, nama, email, jabatan, photo], (err, result, field) => {
-        if (!err)
-            return res.json({code: 1, message: "Berhasil menambahkan data karyawan baru!"})
-        else
-            return res.json({code: 0, message: "Terjadi kesalahan, harap hubungi super admin!"})
-    })
+    try {
+        let data = req.body;
+        let nama = null;
+        let email = null;
+        let jabatan = null;
+        let photo = null;
+        //
+        if (req.body.nama)
+            nama = data.nama;
+        if (req.body.email)
+            email = data.email;
+        if (req.body.jabatan)
+            jabatan = data.jabatan;
+        if (req.body.photo)
+            photo = data.photo;
+        //
+        let connect = DB.config;
+        //Pengecekan nip
+        connect.query("SELECT * FROM karyawan WHERE nip = ?", [data.nip], (err, result, field) => {
+            if (result.length > 0)
+                return res.json({code: 0, message: "Data nip sudah ada!"})
+            else {
+                connect.query("INSERT INTO karyawan(nip,id_bagian,nama,email,jabatan,photo) VALUES(?,?,?,?,?,?)", [data.nip, data.id_bagian, nama, email, jabatan, photo], (err, result, field) => {
+                    if (!err)
+                        return res.json({code: 1, message: "Berhasil menambahkan data karyawan baru!"})
+                    else
+                        return res.json({code: 0, message: "Terjadi kesalahan, harap hubungi super admin!"})
+                })
+            }
+        });
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 const updateKaryawan = async (req, res) => {
@@ -215,5 +269,6 @@ module.exports = {
     updateKaryawan,
     login,
     loginKaryawan,
-    registerKaryawan
+    registerKaryawan,
+    loginHR
 }

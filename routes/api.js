@@ -22,6 +22,7 @@ router.post('/upload-image', Upload.uploadImage);
 router.post('/tambah-karyawan', Karyawan.tambahKaryawan);
 router.get('/get-karyawan/:nip', Karyawan.getKaryawan);
 router.put('/update-karyawan', Karyawan.updateKaryawan);
+router.post('/login/hr', Karyawan.loginHR)
 
 //Area API Main Absensi
 router.get('/main-absensi', Absensi.getMainAbsensi)
