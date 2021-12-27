@@ -5,6 +5,7 @@ const Bagian = require('../controller/bagian');
 const Karyawan = require('../controller/karyawan');
 const Upload = require('../upload');
 const Absensi = require('../controller/absensi')
+const Kompetensi = require('../controller/kompetensi')
 
 //Area API Divisi
 router.post('/divisi', Divisi.addDivisi);
@@ -35,5 +36,9 @@ router.post('/detail-absensi/qr', Absensi.absensiQR)
 //Area API Android
 router.post('/android/login', Karyawan.loginKaryawan)
 router.post('/android/karyawan', Karyawan.registerKaryawan)
+
+//Area kompetensi
+router.post('/kompetensi', Kompetensi.tambahKompetensi)
+router.put('/kompetensi', Kompetensi.updateKompetensi)
 
 module.exports = router;
