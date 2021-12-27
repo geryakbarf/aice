@@ -1,0 +1,253 @@
+<%- include('./partials/header.html') %>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <!-- Left navbar links -->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            </li>
+        </ul>
+
+        <!-- Right navbar links -->
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                </a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+                <a href="/hr/logout" class="nav-link">Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+    <%- include('./partials/left-navbar.html') %>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <!-- Small boxes (Stat box) -->
+                <div class="row">
+                    <div class="col">
+                        <div class="card card-primary" id="form-karyawan-update">
+                            <div class="card-header">
+                                <h3 class="card-title">Ubah Data Karyawan</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="nip">NIP</label>
+                                    <input type="number" class="form-control" name="nip" id="nip"
+                                           placeholder="Masukkan NIP karyawan" required v-model="form.nip" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nama">Nama (Opsional)</label>
+                                    <input type="text" class="form-control" name="nama" id="nama"
+                                           placeholder="Masukkan Nama karyawan" v-model="form.nama">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Alamat Email (Opsional)</label>
+                                    <input type="email" class="form-control" name="email" id="email"
+                                           placeholder="Masukkan Alamat Email karyawan" v-model="form.email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nomor_kontak">Nomor Kontak (Opsional)</label>
+                                    <input type="number" class="form-control" name="nomor_kontak" id="nomor_kontak"
+                                           placeholder="Masukkan Nomor Kontak karyawan" v-model="form.nomor_kontak">
+                                </div>
+                                <div class="form-group">
+                                    <label>Alamat (Opsional)</label>
+                                    <textarea name="alamat" id="alamat" class="form-control" rows="5"
+                                              placeholder="Masukkan Alamat Tinggal Karyawan" spellcheck="false"
+                                              v-model="form.alamat"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Dari Bagian Mana ?</label>
+                                    <select class="form-control" name="id_bagian" id="id_bagian"
+                                            v-model="form.id_bagian" required>
+                                        <option value="0" disabled selected>Pilih Daria Bagian Mana</option>
+                                        <option v-bind:value="data.id" v-for="data in bagian">{{data.nama}} - Divisi
+                                            {{data.divisi}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <!-- select -->
+                                <div class="form-group">
+                                    <label>Jabatan (Opsional)</label>
+                                    <select class="form-control" name="jabatan" id="jabatan" v-model="form.jabatan">
+                                        <option value="" disabled selected> Silahkan pilih</option>
+                                        <option value="Biasa">Karyawan Biasa</option>
+                                        <option value="Supervisor">Supervisor</option>
+                                        <option value="Manajer">Manajer</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="photo">Foto Karyawan (Opsional) </label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="photo"
+                                                   v-on:change="onPhotoChange">
+                                            <label class="custom-file-label" id="labelphoto" for="photo">Pilih
+                                                File</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary" v-on:click="onSave()">Submit</button>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                    </div>
+                    <!-- /.row -->
+
+                </div>
+        </section>
+    </div>
+</div>
+<footer class="main-footer">
+    <strong>Copyright &copy; 2021 Gery Akbar Fauzi - UNIKOM</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+        <b>Version</b> 1.0
+    </div>
+</footer>
+<script>
+    var id = '<%= locals.id %>';
+</script>
+<% if(locals.aksi == 1) { %>
+<script>
+    window.onload = function () {
+        alert("Data divisi sudah ada di basis data!");
+    }
+</script>
+<% } %>
+<%- include('./partials/footer.html') %>
+<script type="application/javascript">
+    var app = new Vue({
+        el: '#form-karyawan-update',
+        data: {
+            form: {
+                nip: null,
+                id_bagian: 0,
+                nama: null,
+                email: null,
+                jabatan: null,
+                photo: null,
+                alamat: null,
+                nomor_kontak: null
+            }, //endform
+            bagian: [],
+            photoChanged: false
+        }, //enddata
+        methods: {
+            loadBagian: async function () {
+                try {
+                    let res = await fetch('/api/get-bagian');
+                    let data = await res.json();
+                    this.bagian = data;
+                } catch (err) {
+                    console.log(err);
+                }
+            },
+            loadDataKaryawan: async function () {
+                try {
+                    if (!id)
+                        return;
+                    else {
+                        this.form.nip = id;
+                        let res = await fetch(`/api/get-karyawan/${id}`);
+                        let data = await res.json();
+                        this.form = data;
+                        if (data.photo != null)
+                            document.getElementById("labelphoto").innerHTML = data.photo.substring(1, data.photo.length);
+                    }
+                } catch (err) {
+
+                }
+            },
+            onPhotoChange: function (e) {
+                try {
+                    let _this = this;
+                    let [file] = e.target.files;
+                    if (!file) throw Error("File kosong");
+                    this.form.photo = file;
+                    document.getElementById("labelphoto").innerHTML = this.form.photo.name;
+                    this.photoChanged = true;
+                } catch (error) {
+                    console.error(error)
+                }
+            },
+            onSave: async function () {
+                try {
+                    //Pengecekan
+                    if (this.form.nip == null || this.form.nip == "") {
+                        toastr.warning("Harap isi NIP karyawan!");
+                        return;
+                    }
+                    if (this.form.id_bagian == 0) {
+                        toastr.warning("Harap isi karyawan dari bagian mana!");
+                        return;
+                    }
+                    let formData = {...this.form};
+                    if (this.photoChanged)
+                        formData.photo = await this.photoUpload();
+                    //
+                    const res = await fetch('/api/update-karyawan', {
+                        method: 'PUT',
+                        body: JSON.stringify(formData),
+                        headers: {'Content-Type': "application/json"}
+                    });
+                    const data = await res.json();
+                    //
+                    if (data.code == 0)
+                        toastr.error(data.message);
+                    else {
+                        toastr.success(data.message);
+                        let _this = this
+                        setTimeout(() => {
+                            window.removeEventListener('beforeunload', _this.leaving, true)
+                            window.location = "/hr/karyawan";
+                        }, 1000);
+                    }
+                } catch (err) {
+                    console.log(err);
+                }
+            },
+            photoUpload: async function () {
+                try {
+                    toastr.warning("Harap Tunggu");
+                    let formData = new FormData();
+                    formData.append('file', this.form.photo)
+                    const params = {method: 'POST', body: formData};
+                    const res = await fetch('/api/upload-image', params);
+                    if (res.status != 200) throw Error("Upload photo gagal!");
+                    const data = await res.json();
+                    return Promise.resolve(data.path);
+                } catch (err) {
+                    return Promise.reject(err);
+                }
+            }
+        },//endmethod
+        mounted() {
+            this.loadBagian()
+            this.loadDataKaryawan()
+        }//endMounted
+    })
+</script>
