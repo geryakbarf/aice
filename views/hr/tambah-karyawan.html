@@ -65,9 +65,18 @@
                                            placeholder="Masukkan Alamat Email karyawan" v-model="form.email">
                                 </div>
                                 <div class="form-group">
+                                    <label>Dari Divisi Mana ?</label>
+                                    <select class="form-control" name="id_divisi" id="id_divisi"
+                                            v-model="form.id_divisi" v-on:change="loadBagian($event)" required>
+                                        <option value="0" disabled selected>Pilih Daria Divisi Mana</option>
+                                        <option v-bind:value="data.id" v-for="data in divisi">{{data.nama}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label>Dari Bagian Mana ?</label>
                                     <select class="form-control" name="id_bagian" id="id_bagian"
-                                            v-model="form.id_bagian" required>
+                                            v-model="form.id_divisi" required>
                                         <option value="0" disabled selected>Pilih Daria Bagian Mana</option>
                                         <option v-bind:value="data.id" v-for="data in bagian">{{data.nama}} - Divisi
                                             {{data.divisi}}
@@ -78,8 +87,9 @@
                                 <div class="form-group">
                                     <label>Jabatan (Opsional)</label>
                                     <select class="form-control" name="jabatan" id="jabatan" v-model="form.jabatan">
-                                        <option value="" disabled selected> Silahkan pilih</option>
+                                        <option value="0" disabled selected> Silahkan pilih</option>
                                         <option value="Biasa">Karyawan Biasa</option>
+                                        <option value="Leader / Koordinator">Team Leader / Koordinator</option>
                                         <option value="Supervisor">Supervisor</option>
                                         <option value="Manajer">Manajer</option>
                                     </select>
@@ -135,19 +145,32 @@
                 id_bagian: 0,
                 nama: null,
                 email: null,
-                jabatan: null,
-                photo: null
+                jabatan: 0,
+                photo: null,
+                id_divisi: 0
             }, //endform
-            bagian: []
+            bagian: [],
+            divisi: []
         }, //enddata
         methods: {
-            loadBagian: async function () {
+            loadBagian: async function (event) {
                 try {
-                    let res = await fetch('/api/get-bagian');
+                    let id = event.target.value
+                    let res = await fetch(`/api/get-bagian/${id}`);
                     let data = await res.json();
+                    console.log(data)
                     this.bagian = data;
                 } catch (err) {
                     console.log(err);
+                }
+            },
+            loadDivisi: async function () {
+                try {
+                    let res = await fetch('/api/divisi/')
+                    let data = await res.json()
+                    this.divisi = data.data
+                } catch (e) {
+                    console.log(e)
                 }
             },
             onPhotoChange: function (e) {
@@ -212,7 +235,7 @@
             }
         },//endmethod
         mounted() {
-            this.loadBagian()
+            this.loadDivisi()
         }//endMounted
     })
 </script>

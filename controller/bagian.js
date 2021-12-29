@@ -99,8 +99,9 @@ const addBagian = async (req, res) => {
 
 const getAllBagian = async (req, res) => {
     let connect = DB.config;
+    let id = req.params.id
     //query
-    connect.query("SELECT bagian.id, bagian.nama, divisi.nama AS divisi FROM bagian JOIN divisi ON bagian.id_divisi = divisi.id", (err, result, field) => {
+    connect.query("SELECT bagian.id, bagian.nama, divisi.nama AS divisi FROM bagian JOIN divisi ON bagian.id_divisi = divisi.id WHERE divisi.id = ?",[id], (err, result, field) => {
         if (!err)
             res.json(result);
     })
