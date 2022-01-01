@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const Karyawan = require("../controller/karyawan")
 const fetch = require("node-fetch");
 const DB = require('../controller/config');
 const auth = require('../middleware/sess_hr_auth');
+const DB = require('../controller/config');
 
 router.get('/login', (req, res) => {
     if (req.session.isHRAuthenticated)
