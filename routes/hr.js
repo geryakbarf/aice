@@ -4,7 +4,6 @@ const Karyawan = require("../controller/karyawan")
 const fetch = require("node-fetch");
 const DB = require('../controller/config');
 const auth = require('../middleware/sess_hr_auth');
-const DB = require('../controller/config');
 
 router.get('/login', (req, res) => {
     if (req.session.isHRAuthenticated)
@@ -25,6 +24,92 @@ router.get('/login', (req, res) => {
 })
 
 router.use(auth)
+
+router.get('/karyawan', (req, res) => {
+    let connect = DB.config;
+    const routePath = "/karyawan";
+    const photo = "http://localhost:3000/assets/uploads" + req.session.photoHR;
+    const nama = req.session.namaHR;
+    const loadCSS = [
+        {src: "https://cdn.datatables.net/1.11.2/css/dataTables.bootstrap4.min.css"},
+        {src: "https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap4.min.css"},
+        {src: "https://cdn.datatables.net/buttons/2.0.0/css/buttons.bootstrap4.min.css"}
+    ];
+    const loadJS = [
+        {src: "https://code.jquery.com/jquery-3.6.0.min.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js"},
+        {src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"},
+        {src: "https://cdn.datatables.net/1.11.2/js/jquery.dataTables.min.js"},
+        {src: "https://cdn.datatables.net/1.11.2/js/dataTables.bootstrap4.min.js"},
+        {src: "https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.js"},
+        {src: "https://cdn.datatables.net/responsive/2.2.9/js/responsive.bootstrap4.min.js"},
+        {src: "https://cdn.datatables.net/buttons/2.0.0/js/buttons.bootstrap4.min.js"},
+        {src: "https://cdn.datatables.net/buttons/2.0.0/js/dataTables.buttons.js"}
+    ];
+    //Query Select
+    connect.query("SELECT karyawan.nip, karyawan.nama, divisi.nama AS divisi, bagian.nama AS bagian, karyawan.jabatan FROM karyawan JOIN bagian ON bagian.id = karyawan.id_bagian JOIN divisi ON bagian.id_divisi = divisi.id ORDER BY karyawan.nip ASC;", (err, result, field) => {
+        if (!err)
+            return res.render('hr/karyawan', {
+                title: "HR - Karyawan",
+                loadJS,
+                loadCSS,
+                routePath,
+                result,
+                nama,
+                photo
+            });
+    })
+})
+
+router.get('/tambah-karyawan', (req, res) => {
+    const photo = "http://localhost:3000/assets/uploads" + req.session.photoHR;
+    const nama = req.session.namaHR;
+    const loadJS = [
+        {src: "https://code.jquery.com/jquery-3.6.0.min.js"},
+        {src: "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"},
+        {src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"},
+    ];
+    const loadCSS = [
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"}
+    ];
+    const routePath = "/karyawan";
+    return res.render('hr/tambah-karyawan', {
+        title: "HR - Tambah Karyawan",
+        loadJS,
+        routePath,
+        loadCSS,
+        nama,
+        photo
+    })
+})
+
+router.get('/edit-karyawan/:nip', (req, res) => {
+    let id = req.params.nip;
+    const photo = "http://localhost:3000/assets/uploads" + req.session.photoHR;
+    const nama = req.session.namaHR;
+    const loadJS = [
+        {src: "https://code.jquery.com/jquery-3.6.0.min.js"},
+        {src: "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"},
+        {src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"}
+    ];
+    const loadCSS = [
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"}
+    ];
+    const routePath = "/karyawan";
+    return res.render('hr/edit-karyawan', {
+        title: "HR - Edit Karyawan",
+        loadJS,
+        routePath,
+        loadCSS,
+        id,
+        nama,
+        photo
+    })
+})
 
 router.get("/", (req, res) => {
     const photo = "http://localhost:3000/assets/uploads" + req.session.photoHR;
@@ -134,6 +219,66 @@ router.get("/edit-kompetensi/:id", (req, res) => {
         } else
             return res.redirect("/hr/kompetensi")
     });
+})
+
+router.get('/kpi', (req, res) => {
+    let connect = DB.config;
+    const routePath = "/kpi";
+    const photo = "http://localhost:3000/assets/uploads" + req.session.photoHR;
+    const nama = req.session.namaHR;
+    const loadCSS = [
+        {src: "https://cdn.datatables.net/1.11.2/css/dataTables.bootstrap4.min.css"},
+        {src: "https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap4.min.css"},
+        {src: "https://cdn.datatables.net/buttons/2.0.0/css/buttons.bootstrap4.min.css"}
+    ];
+    const loadJS = [
+        {src: "https://code.jquery.com/jquery-3.6.0.min.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js"},
+        {src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"},
+        {src: "https://cdn.datatables.net/1.11.2/js/jquery.dataTables.min.js"},
+        {src: "https://cdn.datatables.net/1.11.2/js/dataTables.bootstrap4.min.js"},
+        {src: "https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.js"},
+        {src: "https://cdn.datatables.net/responsive/2.2.9/js/responsive.bootstrap4.min.js"},
+        {src: "https://cdn.datatables.net/buttons/2.0.0/js/buttons.bootstrap4.min.js"},
+        {src: "https://cdn.datatables.net/buttons/2.0.0/js/dataTables.buttons.js"}
+    ];
+    //Query SELECT
+    connect.query("SELECT divisi.nama, divisi.id FROM divisi JOIN kpi ON divisi.id = kpi.id_divisi GROUP BY divisi.id", (err, result, field) => {
+        if (!err)
+            return res.render('hr/kpi', {
+                title: "HR - Key Performance Index",
+                routePath,
+                result,
+                loadJS,
+                loadCSS,
+                nama,
+                photo
+            })
+    });
+})
+
+router.get('/tambah-kpi', (req, res) => {
+    const photo = "http://localhost:3000/assets/uploads" + req.session.photoHR;
+    const nama = req.session.namaHR;
+    const routePath = "/kpi";
+    const loadCSS = [
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"}
+    ];
+    const loadJS = [
+        {src: "https://code.jquery.com/jquery-3.6.0.min.js"},
+        {src: "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"},
+        {src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"}
+    ];
+    return res.render('hr/tambah-kpi', {
+        title: "HR - Tambah KPI",
+        loadJS,
+        routePath,
+        nama,
+        photo,
+        loadCSS
+    })
 })
 
 module.exports = router;
