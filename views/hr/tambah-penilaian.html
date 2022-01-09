@@ -1,0 +1,412 @@
+<%- include('./partials/header.html') %>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <!-- Left navbar links -->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            </li>
+        </ul>
+
+        <!-- Right navbar links -->
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                </a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+                <a href="/hr/logout" class="nav-link">Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+    <%- include('./partials/left-navbar.html') %>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid" id="form-penilaian">
+                <!-- Small boxes (Stat box) -->
+                <div class="row">
+                    <div class="col">
+                        <div class="card card-info">
+                            <div class="card-header">
+                                <h3 class="card-title">Informasi Karyawan</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label for="nama" class="col-sm-2 col-form-label">Nama</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="nama" readonly
+                                               value="<%= result[0].nama %>">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="posisi" class="col-sm-2 col-form-label">Posisi</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="posisi" readonly
+                                               value="<%= result[0].nama_bagian %>">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="departemen" class="col-sm-2 col-form-label">Departemen</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="departemen" readonly
+                                               value="<%= result[0].nama_divisi %>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Penilaian KPI</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                        </div>
+                        <!-- ./col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <div class="row" v-for="(data,index) in form.kpi">
+                    <div class="col">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">{{data.sasaran_kerja}}</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label for="kpi" class="col-sm-2 col-form-label">Key Performance Index</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" name="kpi" id="kpi"
+                                               readonly v-model="data.kpi"
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="bobot_kpi" class="col-sm-2 col-form-label">Bobot KPI (Sudah dalam
+                                        persen)</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" name="bobot_kpi" id="bobot_kpi"
+                                               readonly v-model="data.bobot_kpi" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="target" class="col-sm-2 col-form-label">Target</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" name="target" id="target"
+                                               readonly v-model="data.target" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="realisasi" class="col-sm-2 col-form-label">Realisasi</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" name="realisasi" id="realisasi"
+                                               v-model="data.realisasi" required
+                                               v-on:input="calculateScore($event,index)">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="skor" class="col-sm-2 col-form-label">Skor</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" name="skor" id="skor"
+                                               readonly v-model="data.skor" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="skorAkhir" class="col-sm-2 col-form-label">Total KPI</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" name="skorAkhir" id="skorAkhir"
+                                               readonly v-model="data.skor_akhir" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label for="skor_akhir" class="col-sm-2 col-form-label">Skor Akhir</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" name="skor_akhir" id="skor_akhir"
+                                               readonly v-model="form.total_skor_kpi" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="persentasi" class="col-sm-2 col-form-label">Persentase Skor KPI</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" name="persentasi" id="persentasi"
+                                               readonly v-model="form.persentase_kpi" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Penilaian Kompetensi Kerja</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" v-for="(data,index) in form.kompetensi">
+                    <div class="col">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label for="kompetensi" class="col-sm-2 col-form-label">Kompetensi</label>
+                                    <div class="col-sm-10">
+                                        <input type="kompetensi" class="form-control" name="kompetensi" id="kompetensi"
+                                               readonly v-model="data.kompetensi" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label" for="detail">Detail</label>
+                                    <div class="col-sm-10">
+                                        <textarea type="kompetensi" class="form-control" name="detail" id="detail"
+                                                  readonly v-model="data.detail" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Nilai Kompetensi</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" v-on:change="calculateCompetition($event,index)">
+                                            <option value="0" selected disabled>Silahkan Pilih Nilai Kompetensi</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label for="skor_kompetensi" class="col-sm-2 col-form-label">Skor Akhir</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" name="skor_kompetensi" id="skor_kompetensi"
+                                               readonly v-model="form.total_skor_kompetensi" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="persentase" class="col-sm-2 col-form-label">Persentase Skor KPI</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" name="persentase" id="persentase"
+                                               readonly v-model="form.persentase_kompetensi" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Kesimpulan Penilaian</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label for="rata_rata" class="col-sm-2 col-form-label">Nilai Rata - Rata</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" name="rata_rata" id="rata_rata"
+                                               readonly v-model="form.rata_rata" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="skor_akhir_kompetensi" class="col-sm-2 col-form-label">Persentase Skor KPI</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" name="skor_akhir_kompetensi" id="skor_akhir_kompetensi"
+                                               readonly v-model="form.total_skor_kompetensi" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="kesimpulan_skor_akhir" class="col-sm-2 col-form-label">Kesimpulan Skor Akhir</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" name="kesimpulan_skor_akhir" id="kesimpulan_skor_akhir"
+                                               readonly v-model="form.skor_akhir" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<footer class="main-footer">
+    <strong>Copyright &copy; 2021 Gery Akbar Fauzi - UNIKOM</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+        <b>Version</b> 1.0
+    </div>
+</footer>
+<%- include('./partials/footer.html') %>
+<script>
+    let idDivisi = <%= result[0].id_divisi %>;
+</script>
+<script type="application/javascript">
+    var app = new Vue({
+        el: '#form-penilaian',
+        data: {
+            form: {
+                id_divisi: 0,
+                kompetensi: [],
+                detail: null,
+                kpi: [],
+                total_skor_kpi: [],
+                persentase_kpi: 0,
+                total_skor_kompetensi: 0,
+                persentase_kompetensi: 0,
+                skor_akhir : 0,
+                rata_rata : 0
+            }
+        },
+        methods: {
+            calculateCompetition: function (event, index) {
+                this.form.kompetensi[index].skor = event.target.value
+                let totalScore = 0
+                for (let i = 0; i < this.form.kompetensi.length; i++) {
+                    totalScore = parseInt(totalScore) + parseInt(this.form.kompetensi[i].skor)
+                }
+                totalScore = (parseInt(totalScore) / this.form.kompetensi.length) * 20
+                this.form.total_skor_kompetensi = totalScore
+                this.form.persentase_kompetensi = (40/100) * totalScore
+                //Hitung Skor Akhir
+                let average = 0
+                for (let i = 0; i < this.form.kompetensi.length; i++) {
+                    average = parseInt(average) + parseInt(this.form.kompetensi[i].skor)
+                }
+                average = average / this.form.kompetensi.length
+                this.form.rata_rata = average
+                this.form.skor_akhir = this.form.persentase_kompetensi + this.form.persentase_kpi
+            },
+            calculateScore: function (event, index) {
+                try {
+                    let realisasi = event.target.value
+                    let target = this.form.kpi[index].target
+                    let score = realisasi / target * 100
+                    let bobotKPI = this.form.kpi[index].bobot_kpi / 100
+                    let finalScore = score * bobotKPI
+                    this.form.kpi[index].skor = score
+                    this.form.kpi[index].skor_akhir = finalScore
+                    let total = 0
+                    for (let i = 0; i < this.form.kpi.length; i++) {
+                        total = total + this.form.kpi[i].skor_akhir
+                    }
+                    this.form.total_skor_kpi = total
+                    this.form.persentase_kpi = (60 / 100) * total
+                } catch (e) {
+
+                }
+            },
+            validation: function () {
+                let isValid = true
+                if (this.form.kompetensi === "")
+                    isValid = false
+                return isValid
+            },
+            loadKPIDivisi: async function () {
+                this.form.id_divisi = idDivisi
+                let res = await fetch(`/api/kpi/${idDivisi}`)
+                let data = await res.json()
+                let result = data.data
+                for (let i = 0; i < result.length; i++) {
+                    let data = {
+                        id: result[i].id,
+                        id_divisi: result[i].id_divisi,
+                        sasaran_kerja: result[i].sasaran_kerja,
+                        kpi: result[i].kpi,
+                        bobot_kpi: result[i].bobot_kpi,
+                        target: result[i].target,
+                        realisasi: 0,
+                        skor: 0,
+                        skor_akhir: 0,
+                    }
+                    this.form.kpi.push(data)
+                }
+            },
+            loadKompetensi: async function () {
+                let res = await fetch(`/api/kompetensi`)
+                let data = await res.json()
+                this.form.kompetensi = data.data
+            },
+            onSave: async function () {
+                try {
+                    //Method Insert
+                    if (!this.validation()) {
+                        toastr.warning("Harap isi semua form yang wajib diisi!")
+                        return
+                    }
+                    let formData = this.form
+                    let result = await fetch('/api/kompetensi', {
+                        method: 'POST',
+                        body: JSON.stringify(formData),
+                        headers: {'Content-Type': "application/json"}
+                    })
+                    let data = await result.json()
+                    if (data.code > 0) {
+                        toastr.success(data.message)
+                        setTimeout(() => {
+                            let context = this
+                            window.removeEventListener('beforeunload', context.leaving, true)
+                            window.location = "/hr/kompetensi"
+                        }, 1000)
+                    } else
+                        toastr.error(data.message)
+                    //endif
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+        },
+        mounted() {
+            this.loadKPIDivisi()
+            this.loadKompetensi()
+        }
+    })
+</script>

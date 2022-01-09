@@ -23,7 +23,7 @@ const getOneKPI = async (req, res) => {
 }
 
 const editKPI = async (req, res) => {
-    try{
+    try {
         let connect = DB.config
         let kpi = req.body.kpi
         let id_divisi = req.body.id_divisi
@@ -62,7 +62,7 @@ const editKPI = async (req, res) => {
                     message: "Terjadi kesalahan! Harap hubungi sysadmin2!"
                 })
         })//end delete query
-    }catch (e) {
+    } catch (e) {
         console.log(e)
     }
 }

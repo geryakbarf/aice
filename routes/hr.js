@@ -315,4 +315,36 @@ router.get('/edit-kpi/:id/:nama', (req, res) => {
     });
 })
 
+router.get('/penilaian/:nip', (req, res) => {
+    let connect = DB.config
+    const nip = req.params.nip
+    const photo = "http://localhost:3000/assets/uploads" + req.session.photoHR;
+    const nama = req.session.namaHR;
+    const routePath = "/penilaian";
+    const loadCSS = [
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"}
+    ];
+    const loadJS = [
+        {src: "https://code.jquery.com/jquery-3.6.0.min.js"},
+        {src: "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"},
+        {src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"}
+    ];
+    //Query SELECT
+    connect.query("SELECT karyawan.nip, karyawan.nama, karyawan.id_bagian, bagian.nama AS nama_bagian, divisi.id AS id_divisi, divisi.nama AS nama_divisi, email, alamat, nomor_kontak, jatah_cuti, jabatan, photo FROM karyawan JOIN bagian ON karyawan.id_bagian = bagian.id JOIN divisi ON divisi.id = bagian.id_divisi WHERE karyawan.nip = ?", [nip], (err, result, field) => {
+        if (!err)
+            return res.render('hr/tambah-penilaian', {
+                title: "HR - Penilaian Karyawan",
+                routePath,
+                result,
+                loadJS,
+                loadCSS,
+                nama,
+                photo,
+                nip
+            })
+    });
+})
+
 module.exports = router;
