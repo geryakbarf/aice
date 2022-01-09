@@ -16,7 +16,7 @@ router.get('/divisi', Divisi.getAllDivision)
 
 //Area API bagian
 router.post('/bagian', Bagian.addBagian);
-router.post('/edit-bagian', Bagian.editBagian);
+router.put('/bagian', Bagian.editBagian);
 router.get('/get-bagian/:id', Bagian.getAllBagian);
 
 //Area Karyawan

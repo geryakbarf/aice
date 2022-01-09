@@ -3,7 +3,7 @@ var app = new Vue({
     data: {
         form: {
             id: null,
-            id_divisi: 0,
+            id_divisi: null,
             nama: "",
             lembur: "Tidak",
             jam_masuk: "",
@@ -65,14 +65,40 @@ var app = new Vue({
                         toastr.error(data.message)
                     //endif
                 } else {
-                    //TODO logika saat update bagian
+                    let formData = this.form
+                    let result = await fetch('/api/bagian', {
+                        method: 'PUT',
+                        body: JSON.stringify(formData),
+                        headers: {'Content-Type': "application/json"}
+                    })
+                    let data = await result.json()
+                    if (data.code > 0) {
+                        toastr.success(data.message)
+                        setTimeout(() => {
+                            let context = this
+                            window.removeEventListener('beforeunload', context.leaving, true)
+                            window.location = "/admin/bagian"
+                        }, 1000)
+                    } else
+                        toastr.error(data.message)
                 }
             } catch (e) {
                 console.log(e)
             }
+        },
+        loadData: function () {
+            this.form.id = idBagian
+            this.form.id_divisi = idDivisi
+            this.form.nama = namaBagian
+            this.form.lembur = lemburBagian
+            this.form.jam_masuk = jamMasukBagian
+            this.form.jam_keluar = jamKeluarBagian
+            this.form.jobdesk = jobDesk
         }
     }, //endmethods
     mounted() {
         this.loadDivisi()
+        this.loadData()
+        console.log(this.form.id_divisi)
     } //endmounted
 })
