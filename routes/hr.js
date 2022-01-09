@@ -281,4 +281,38 @@ router.get('/tambah-kpi', (req, res) => {
     })
 })
 
+router.get('/edit-kpi/:id/:nama', (req, res) => {
+    let connect = DB.config
+    const id = req.params.id
+    const namaDivisi = req.params.nama
+    const photo = "http://localhost:3000/assets/uploads" + req.session.photoHR;
+    const nama = req.session.namaHR;
+    const routePath = "/kpi";
+    const loadCSS = [
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"}
+    ];
+    const loadJS = [
+        {src: "https://code.jquery.com/jquery-3.6.0.min.js"},
+        {src: "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"},
+        {src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"}
+    ];
+    //Query SELECT
+    connect.query("SELECT * FROM kpi WHERE id_divisi = ?", [id], (err, result, field) => {
+        if (!err)
+            return res.render('hr/edit-kpi', {
+                title: "HR - Edit KPI",
+                routePath,
+                result,
+                loadJS,
+                loadCSS,
+                nama,
+                photo,
+                namaDivisi,
+                id
+            })
+    });
+})
+
 module.exports = router;

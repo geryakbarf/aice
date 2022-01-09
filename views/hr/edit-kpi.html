@@ -40,7 +40,7 @@
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid" id="form-kompetensi">
-                <h1>Tambah Data KPI Baru</h1>
+                <h1>Edit Data KPI</h1>
                 <!-- Small boxes (Stat box) -->
                 <div class="row">
                     <div class="col">
@@ -49,11 +49,9 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <label>Dari Divisi Mana ?</label>
-                                    <select class="form-control" name="id_divisi" id="id_divisi"
-                                            v-model="form.id_divisi" required>
-                                        <option value="0" disabled selected>Pilih Daria Divisi Mana</option>
-                                        <option v-bind:value="data.id" v-for="data in divisi">{{data.nama}}
-                                        </option>
+                                    <select class="form-control" name="id_divisi" id="id_divisi" required>
+                                        <option value="0" disabled>Pilih Daria Divisi Mana</option>
+                                        <option value="<%= namaDivisi; %>" selected><%= namaDivisi; %></option>
                                     </select>
                                 </div>
                             </div>
@@ -104,7 +102,7 @@
                 </div>
                 <div class="card-footer">
                     <button type="submit" style="float: right" class="btn btn-primary" v-on:click="onSave()">
-                        Simpan
+                        Simpan Pembaruan
                     </button>
                     <button type="submit" style="float: right; margin-right: 10px" class="btn btn-primary"
                             v-on:click="addKPI()">Tambah KPI
@@ -123,6 +121,10 @@
 </footer>
 <%- include('./partials/footer.html') %>
 <script type="application/javascript">
+    let dataNama = "<%= namaDivisi %>";
+    let idDivisi = <%= id %>;
+</script>
+<script type="application/javascript">
     var app = new Vue({
         el: '#form-kompetensi',
         data: {
@@ -130,14 +132,16 @@
                 id_divisi: 0,
                 kpi: [],
             },
-            divisi: []
+            namaDivisi: ""
         },
         methods: {
-            loadDivisi: async function () {
+            loadData: async function () {
                 try {
-                    let res = await fetch('/api/divisi/')
+                    this.namaDivisi = dataNama
+                    this.form.id_divisi = idDivisi
+                    let res = await fetch(`/api/kpi/${idDivisi}`)
                     let data = await res.json()
-                    this.divisi = data.data
+                    this.form.kpi = data.data
                 } catch (e) {
                     console.log(e)
                 }
@@ -194,11 +198,11 @@
             onSave: async function () {
                 try {
                     //Method Insert
-                    if(this.form.id_divisi == 0){
+                    if (this.form.id_divisi == 0) {
                         toastr.warning("Silahkan pilih divisinya!")
                         return
                     }
-                    if(this.form.kpi.length <= 0){
+                    if (this.form.kpi.length <= 0) {
                         toastr.warning("Harus ada setidaknya minimal 1 KPI!")
                         return
                     }
@@ -212,7 +216,7 @@
                     }
                     let formData = this.form
                     let result = await fetch('/api/kpi', {
-                        method: 'POST',
+                        method: 'PUT',
                         body: JSON.stringify(formData),
                         headers: {'Content-Type': "application/json"}
                     })
@@ -233,7 +237,7 @@
             }
         },
         mounted() {
-            this.loadDivisi()
+            this.loadData()
         }
     })
 </script>

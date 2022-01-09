@@ -44,5 +44,7 @@ router.put('/kompetensi', Kompetensi.updateKompetensi)
 
 //Area KPI
 router.post('/kpi', KPI.tambahKPI)
+router.get('/kpi/:id', KPI.getOneKPI)
+router.put('/kpi', KPI.editKPI)
 
 module.exports = router;

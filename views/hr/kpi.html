@@ -61,16 +61,17 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <% let i = 1; %>
                                     <% if(locals.result) { %>
                                     <% for(data of result) { %>
-                                    <% let i = 1; %>
                                     <tr>
                                         <td><%= i; %></td>
                                         <td><%= data.nama; %></td>
-                                        <td><a href="/hr/edit-kpi/<%= data.id %>">
+                                        <td><a href="/hr/edit-kpi/<%= data.id %>/<%= data.nama %>">
                                             <button type="button" class="btn btn-block btn-primary">Edit</button>
                                         </a></td>
                                     </tr>
+                                    <% i++; %>
                                     <% } %>
                                     <% } %>
                                     </tbody>
