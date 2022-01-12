@@ -7,6 +7,7 @@ const Upload = require('../upload');
 const Absensi = require('../controller/absensi')
 const Kompetensi = require('../controller/kompetensi')
 const KPI = require('../controller/kpi')
+const Penilaian = require('../controller/penilaian')
 
 //Area API Divisi
 router.post('/divisi', Divisi.addDivisi);
@@ -47,5 +48,8 @@ router.get('/kompetensi', Kompetensi.getAllKompetensi)
 router.post('/kpi', KPI.tambahKPI)
 router.get('/kpi/:id', KPI.getOneKPI)
 router.put('/kpi', KPI.editKPI)
+
+//Area Penilaian
+router.post('/penilaian', Penilaian.insertPenialain)
 
 module.exports = router;

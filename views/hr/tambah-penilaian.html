@@ -201,7 +201,8 @@
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Nilai Kompetensi</label>
                                     <div class="col-sm-10">
-                                        <select class="form-control" v-on:change="calculateCompetition($event,index)">
+                                        <select class="form-control" v-on:change="calculateCompetition($event,index)"
+                                        v-model="data.nilai">
                                             <option value="0" selected disabled>Silahkan Pilih Nilai Kompetensi</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -256,7 +257,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="skor_akhir_kompetensi" class="col-sm-2 col-form-label">Persentase Skor KPI</label>
+                                    <label for="skor_akhir_kompetensi" class="col-sm-2 col-form-label">Skor Akhir Kompetensi</label>
                                     <div class="col-sm-10">
                                         <input type="number" class="form-control" name="skor_akhir_kompetensi" id="skor_akhir_kompetensi"
                                                readonly v-model="form.total_skor_kompetensi" required>
@@ -271,6 +272,9 @@
                                 </div>
                             </div>
                             <!-- /.card-body -->
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary" v-on:click="onSave()">Submit</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -288,17 +292,20 @@
 <%- include('./partials/footer.html') %>
 <script>
     let idDivisi = <%= result[0].id_divisi %>;
+    let nipKaryawan = <%= result[0].nip %>;
 </script>
 <script type="application/javascript">
     var app = new Vue({
         el: '#form-penilaian',
         data: {
             form: {
+                id : '',
+                nip : '',
                 id_divisi: 0,
                 kompetensi: [],
                 detail: null,
                 kpi: [],
-                total_skor_kpi: [],
+                total_skor_kpi: 0,
                 persentase_kpi: 0,
                 total_skor_kompetensi: 0,
                 persentase_kompetensi: 0,
@@ -344,12 +351,6 @@
 
                 }
             },
-            validation: function () {
-                let isValid = true
-                if (this.form.kompetensi === "")
-                    isValid = false
-                return isValid
-            },
             loadKPIDivisi: async function () {
                 this.form.id_divisi = idDivisi
                 let res = await fetch(`/api/kpi/${idDivisi}`)
@@ -373,17 +374,24 @@
             loadKompetensi: async function () {
                 let res = await fetch(`/api/kompetensi`)
                 let data = await res.json()
-                this.form.kompetensi = data.data
+                let result = data.data
+                for (let i = 0; i < result.length; i++) {
+                    let data = {
+                        id: result[i].id,
+                        kompetensi: result[i].kompetensi,
+                        detail: result[i].detail,
+                        nilai: 0
+                    }
+                    this.form.kompetensi.push(data)
+                }
             },
             onSave: async function () {
                 try {
                     //Method Insert
-                    if (!this.validation()) {
-                        toastr.warning("Harap isi semua form yang wajib diisi!")
-                        return
-                    }
                     let formData = this.form
-                    let result = await fetch('/api/kompetensi', {
+                    formData.nip = nipKaryawan
+                    formData.id = Date.now()
+                    let result = await fetch('/api/penilaian', {
                         method: 'POST',
                         body: JSON.stringify(formData),
                         headers: {'Content-Type': "application/json"}
@@ -394,7 +402,7 @@
                         setTimeout(() => {
                             let context = this
                             window.removeEventListener('beforeunload', context.leaving, true)
-                            window.location = "/hr/kompetensi"
+                            window.location = "/hr/penilaian"
                         }, 1000)
                     } else
                         toastr.error(data.message)
