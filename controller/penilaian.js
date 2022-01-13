@@ -44,6 +44,51 @@ const insertPenialain = async (req, res) => {
     }
 }
 
+const getOnePenilaian = async (req, res) => {
+    let connect = DB.config
+    let id = req.params.id
+    try {
+        connect.query("SELECT * FROM penilaian WHERE id = ?", [id], (error, result) => {
+            return res.json({
+                data: result
+            })
+        })
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+const getPenilaianKPI = async (req, res) => {
+    let connect = DB.config
+    let id = req.params.id
+    try {
+        connect.query("SELECT * FROM detail_penilaian_kpi WHERE id_penilaian = ?", [id], (error, result) => {
+            return res.json({
+                data: result
+            })
+        })
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+const getPenilaianKompetensi = async (req, res) => {
+    let connect = DB.config
+    let id = req.params.id
+    try {
+        connect.query("SELECT * FROM detail_penilaian_kompetensi_kerja WHERE id_penilaian = ?", [id], (error, result) => {
+            return res.json({
+                data: result
+            })
+        })
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 module.exports = {
-    insertPenialain
+    insertPenialain,
+    getOnePenilaian,
+    getPenilaianKPI,
+    getPenilaianKompetensi
 }

@@ -51,5 +51,8 @@ router.put('/kpi', KPI.editKPI)
 
 //Area Penilaian
 router.post('/penilaian', Penilaian.insertPenialain)
+router.get('/penilaian/:id', Penilaian.getOnePenilaian)
+router.get('/penilaian/kpi/:id', Penilaian.getPenilaianKPI)
+router.get('/penilaian/kompetensi/:id', Penilaian.getPenilaianKompetensi)
 
 module.exports = router;

@@ -96,19 +96,15 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr v-for="(data,index) in form.kpi">
+                                    <tr v-for="(data,index) in kpi">
                                         <td>{{index + 1}}</td>
                                         <td>{{data.sasaran_kerja}}</td>
                                         <td>{{data.kpi}}</td>
                                         <td>{{data.bobot_kpi}}</td>
                                         <td>{{data.target}}</td>
-                                        <td><input type="number" class="form-control" name="realisasi" id="realisasi"
-                                                   v-model="data.realisasi" required
-                                                   v-on:input="calculateScore($event,index)"></td>
-                                        <td> <input type="number" class="form-control" name="skor" id="skor"
-                                                    readonly v-model="data.skor" required></td>
-                                        <td><input type="number" class="form-control" name="skorAkhir" id="skorAkhir"
-                                                   readonly v-model="data.skor_akhir" required></td>
+                                        <td>{{data.realisasi}}</td>
+                                        <td>{{data.skor}}</td>
+                                        <td>{{data.skor_akhir}}</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -117,13 +113,6 @@
                                     <div class="col-sm-10">
                                         <input type="number" class="form-control" name="skor_akhir" id="skor_akhir"
                                                readonly v-model="form.total_skor_kpi" required>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="persentasi" class="col-sm-2 col-form-label">Persentase Skor KPI</label>
-                                    <div class="col-sm-10">
-                                        <input type="number" class="form-control" name="persentasi" id="persentasi"
-                                               readonly v-model="form.persentase_kpi" required>
                                     </div>
                                 </div>
                             </div>
@@ -147,38 +136,24 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr v-for="(data,index) in form.kompetensi">
+                                    <tr v-for="(data,index) in kompetensi">
                                         <td>{{index + 1}}</td>
-                                        <td><h5>{{data.kompetensi}}</h5>
+                                        <td><h5>{{data.nama_kompetensi}}</h5>
                                             <div v-if="data.detail != null">
                                                 <br>
                                                 <p> {{data.detail}} </p>
                                             </div>
                                         </td>
-                                        <td> <select class="form-control" v-on:change="calculateCompetition($event,index)"
-                                                     v-model="data.nilai">
-                                            <option value="0" selected disabled>Silahkan Pilih Nilai Kompetensi</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                        </select></td>
+                                        <td>{{data.nilai}}</td>
                                     </tr>
                                     </tbody>
                                 </table>
                                 <div class="form-group row" style="margin-top: 20px">
                                     <label for="skor_kompetensi" class="col-sm-2 col-form-label">Skor Akhir</label>
                                     <div class="col-sm-10">
-                                        <input type="number" class="form-control" name="skor_kompetensi" id="skor_kompetensi"
-                                               readonly v-model="form.total_skor_kompetensi" required>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="persentase" class="col-sm-2 col-form-label">Persentase Skor KPI</label>
-                                    <div class="col-sm-10">
-                                        <input type="number" class="form-control" name="persentase" id="persentase"
-                                               readonly v-model="form.persentase_kompetensi" required>
+                                        <input type="number" class="form-control" name="skor_kompetensi"
+                                               id="skor_kompetensi"
+                                               readonly v-model="form.skor_kompetensi" required>
                                     </div>
                                 </div>
                             </div>
@@ -200,24 +175,25 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="skor_akhir_kompetensi" class="col-sm-2 col-form-label">Skor Akhir Kompetensi</label>
+                                    <label for="skor_akhir_kompetensi" class="col-sm-2 col-form-label">Skor Akhir
+                                        Kompetensi</label>
                                     <div class="col-sm-10">
-                                        <input type="number" class="form-control" name="skor_akhir_kompetensi" id="skor_akhir_kompetensi"
-                                               readonly v-model="form.total_skor_kompetensi" required>
+                                        <input type="number" class="form-control" name="skor_akhir_kompetensi"
+                                               id="skor_akhir_kompetensi"
+                                               readonly v-model="form.skor_kompetensi" required>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="kesimpulan_skor_akhir" class="col-sm-2 col-form-label">Kesimpulan Skor Akhir</label>
+                                    <label for="kesimpulan_skor_akhir" class="col-sm-2 col-form-label">Kesimpulan Skor
+                                        Akhir</label>
                                     <div class="col-sm-10">
-                                        <input type="number" class="form-control" name="kesimpulan_skor_akhir" id="kesimpulan_skor_akhir"
-                                               readonly v-model="form.skor_akhir" required>
+                                        <input type="number" class="form-control" name="kesimpulan_skor_akhir"
+                                               id="kesimpulan_skor_akhir"
+                                               readonly v-model="form.kesimpulan_skor" required>
                                     </div>
                                 </div>
                             </div>
                             <!-- /.card-body -->
-                            <div class="card-footer">
-                                <button type="submit" class="btn btn-primary" v-on:click="onSave()">Submit</button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -236,136 +212,48 @@
 <script>
     let idDivisi = <%= result[0].id_divisi %>;
     let nipKaryawan = <%= result[0].nip %>;
+    let idPenilaian = <%= idNilai %>;
 </script>
 <script type="application/javascript">
     var app = new Vue({
         el: '#form-penilaian',
         data: {
+            kpi : [],
+            kompetensi: [],
             form: {
-                id : '',
-                nip : '',
-                id_divisi: 0,
-                kompetensi: [],
-                detail: null,
-                kpi: [],
-                total_skor_kpi: 0,
-                persentase_kpi: 0,
-                total_skor_kompetensi: 0,
-                persentase_kompetensi: 0,
-                skor_akhir : 0,
-                rata_rata : 0
+                id: '',
+                nip: '',
+                tanggal: '',
+                total_skor_kpi: '',
+                rata_rata: '',
+                skor_kompetensi: '',
+                kesimpulan_skor: ''
             }
         },
         methods: {
-            calculateCompetition: function (event, index) {
-                this.form.kompetensi[index].skor = event.target.value
-                let totalScore = 0
-                for (let i = 0; i < this.form.kompetensi.length; i++) {
-                    totalScore = parseInt(totalScore) + parseInt(this.form.kompetensi[i].skor)
-                }
-                totalScore = (parseInt(totalScore) / this.form.kompetensi.length) * 20
-                this.form.total_skor_kompetensi = totalScore
-                this.form.persentase_kompetensi = (40/100) * totalScore
-                //Hitung Skor Akhir
-                let average = 0
-                for (let i = 0; i < this.form.kompetensi.length; i++) {
-                    average = parseInt(average) + parseInt(this.form.kompetensi[i].skor)
-                }
-                average = average / this.form.kompetensi.length
-                this.form.rata_rata = average
-                this.form.skor_akhir = this.form.persentase_kompetensi + this.form.persentase_kpi
+            loadPenilaian: async function () {
+                this.form.id = idPenilaian
+                let res = await fetch(`/api/penilaian/${this.form.id}`)
+                let data = await res.json()
+                this.form = data.data[0]
             },
-            calculateScore: function (event, index) {
-                try {
-                    let realisasi = event.target.value
-                    let target = this.form.kpi[index].target
-                    let score = realisasi / target * 100
-                    let bobotKPI = this.form.kpi[index].bobot_kpi / 100
-                    let finalScore = score * bobotKPI
-                    this.form.kpi[index].skor = score
-                    this.form.kpi[index].skor_akhir = finalScore
-                    let total = 0
-                    for (let i = 0; i < this.form.kpi.length; i++) {
-                        total = total + this.form.kpi[i].skor_akhir
-                    }
-                    this.form.total_skor_kpi = total
-                    this.form.persentase_kpi = (60 / 100) * total
-                    //Hitung Skor Akhir
-                    let average = 0
-                    for (let i = 0; i < this.form.kompetensi.length; i++) {
-                        average = parseInt(average) + parseInt(this.form.kompetensi[i].skor)
-                    }
-                    average = average / this.form.kompetensi.length
-                    this.form.rata_rata = average
-                    this.form.skor_akhir = this.form.persentase_kompetensi + this.form.persentase_kpi
-                } catch (e) {
-
-                }
-            },
-            loadKPIDivisi: async function () {
+            loadPenilaianKPI: async function () {
                 this.form.id_divisi = idDivisi
-                let res = await fetch(`/api/kpi/${idDivisi}`)
+                let res = await fetch(`/api/penilaian/kpi/${this.form.id}`)
                 let data = await res.json()
-                let result = data.data
-                for (let i = 0; i < result.length; i++) {
-                    let data = {
-                        id: result[i].id,
-                        id_divisi: result[i].id_divisi,
-                        sasaran_kerja: result[i].sasaran_kerja,
-                        kpi: result[i].kpi,
-                        bobot_kpi: result[i].bobot_kpi,
-                        target: result[i].target,
-                        realisasi: 0,
-                        skor: 0,
-                        skor_akhir: 0,
-                    }
-                    this.form.kpi.push(data)
-                }
+                this.kpi = data.data
             },
-            loadKompetensi: async function () {
-                let res = await fetch(`/api/kompetensi`)
+            loadPenilaianKompetensi: async function () {
+                this.form.id_divisi = idDivisi
+                let res = await fetch(`/api/penilaian/kompetensi/${this.form.id}`)
                 let data = await res.json()
-                let result = data.data
-                for (let i = 0; i < result.length; i++) {
-                    let data = {
-                        id: result[i].id,
-                        kompetensi: result[i].kompetensi,
-                        detail: result[i].detail,
-                        nilai: 0
-                    }
-                    this.form.kompetensi.push(data)
-                }
-            },
-            onSave: async function () {
-                try {
-                    //Method Insert
-                    let formData = this.form
-                    formData.nip = nipKaryawan
-                    formData.id = Date.now()
-                    let result = await fetch('/api/penilaian', {
-                        method: 'POST',
-                        body: JSON.stringify(formData),
-                        headers: {'Content-Type': "application/json"}
-                    })
-                    let data = await result.json()
-                    if (data.code > 0) {
-                        toastr.success(data.message)
-                        setTimeout(() => {
-                            let context = this
-                            window.removeEventListener('beforeunload', context.leaving, true)
-                            window.location = "/hr/penilaian"
-                        }, 1000)
-                    } else
-                        toastr.error(data.message)
-                    //endif
-                } catch (e) {
-                    console.log(e)
-                }
+                this.kompetensi = data.data
             }
         },
         mounted() {
-            this.loadKPIDivisi()
-            this.loadKompetensi()
+            this.loadPenilaian()
+            this.loadPenilaianKPI()
+            this.loadPenilaianKompetensi()
         }
     })
 </script>
