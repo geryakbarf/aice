@@ -99,7 +99,7 @@ var app = new Vue({
           let _this = this
           setTimeout(() => {
             window.removeEventListener('beforeunload', _this.leaving, true)
-            window.location = "/hr/karyawan";
+            window.location = "/admin/karyawan";
           }, 1000);
         }
       } catch (err) {

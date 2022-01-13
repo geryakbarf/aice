@@ -417,4 +417,14 @@ router.get('/penilaian/detail/:id/:nip', (req, res) => {
     });
 })
 
+router.get('/logout', (req, res) => {
+    delete req.session.isHRAuthenticated
+    delete req.session.nipHR
+    delete req.session.bagianHR
+    delete req.session.emailHR
+    delete req.session.namaHR
+    delete req.session.photoHR
+    return res.redirect("/hr/login");
+})
+
 module.exports = router;

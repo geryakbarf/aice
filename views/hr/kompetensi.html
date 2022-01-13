@@ -63,8 +63,8 @@
                                     </thead>
                                     <tbody>
                                     <% if(locals.result) { %>
-                                    <% for(data of result) { %>
                                     <% let i = 1; %>
+                                    <% for(data of result) { %>
                                     <tr>
                                         <td><%= i; %></td>
                                         <td><%= data.kompetensi; %></td>
@@ -73,6 +73,7 @@
                                             <button type="button" class="btn btn-block btn-primary">Edit</button>
                                         </a></td>
                                     </tr>
+                                    <% i++; %>
                                     <% } %>
                                     <% } %>
                                     </tbody>
