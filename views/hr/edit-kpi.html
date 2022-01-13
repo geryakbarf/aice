@@ -1,0 +1,243 @@
+<%- include('./partials/header.html') %>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <!-- Left navbar links -->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            </li>
+        </ul>
+
+        <!-- Right navbar links -->
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                </a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+                <a href="/hr/logout" class="nav-link">Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+    <%- include('./partials/left-navbar.html') %>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid" id="form-kompetensi">
+                <h1>Edit Data KPI</h1>
+                <!-- Small boxes (Stat box) -->
+                <div class="row">
+                    <div class="col">
+                        <div class="card card-primary">
+                            <!-- form start -->
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Dari Divisi Mana ?</label>
+                                    <select class="form-control" name="id_divisi" id="id_divisi" required>
+                                        <option value="0" disabled>Pilih Daria Divisi Mana</option>
+                                        <option value="<%= namaDivisi; %>" selected><%= namaDivisi; %></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- ./col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <div class="row" v-for="kpi in form.kpi">
+                    <div class="col">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">KPI</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="sasaran_kerja">Sasaran Kerja</label>
+                                    <input type="text" class="form-control" name="sasaran_kerja" id="sasaran_kerja"
+                                           placeholder="Contoh : Kecepatan dan Ketelitian Kerja"
+                                           v-model="kpi.sasaran_kerja" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kpi">Key Performance Index</label>
+                                    <input type="text" class="form-control" name="kpi" id="kpi"
+                                           placeholder="Contoh : Penerimaan dan Pengeluaran Produk" v-model="kpi.kpi"
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bobot_kpi">Bobot KPI (Sudah dalam persen)</label>
+                                    <input type="number" class="form-control" name="bobot_kpi" id="bobot_kpi"
+                                           placeholder="Contoh : 50" v-model="kpi.bobot_kpi" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="target">Target KPI</label>
+                                    <input type="number" class="form-control" name="target" id="target"
+                                           placeholder="Contoh : 100" v-model="kpi.target" required>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary" v-on:click="deleteKPI(kpi.id)">Hapus
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" style="float: right" class="btn btn-primary" v-on:click="onSave()">
+                        Simpan Pembaruan
+                    </button>
+                    <button type="submit" style="float: right; margin-right: 10px" class="btn btn-primary"
+                            v-on:click="addKPI()">Tambah KPI
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<footer class="main-footer">
+    <strong>Copyright &copy; 2021 Gery Akbar Fauzi - UNIKOM</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+        <b>Version</b> 1.0
+    </div>
+</footer>
+<%- include('./partials/footer.html') %>
+<script type="application/javascript">
+    let dataNama = "<%= namaDivisi %>";
+    let idDivisi = <%= id %>;
+</script>
+<script type="application/javascript">
+    var app = new Vue({
+        el: '#form-kompetensi',
+        data: {
+            form: {
+                id_divisi: 0,
+                kpi: [],
+            },
+            namaDivisi: ""
+        },
+        methods: {
+            loadData: async function () {
+                try {
+                    this.namaDivisi = dataNama
+                    this.form.id_divisi = idDivisi
+                    let res = await fetch(`/api/kpi/${idDivisi}`)
+                    let data = await res.json()
+                    this.form.kpi = data.data
+                } catch (e) {
+                    console.log(e)
+                }
+            },
+            validation: function () {
+                let isValid = true
+                for (let i = 0; i < this.form.kpi.length; i++) {
+                    if (this.form.kpi[i].sasaran_kerja == '') {
+                        isValid = false
+                        break
+                    }
+                    if (this.form.kpi[i].kpi == '') {
+                        isValid = false
+                        break
+                    }
+                    if (this.form.kpi[i].bobot_kpi == '' || this.form.kpi[i].bobot_kpi <= 0) {
+                        isValid = false
+                        break
+                    }
+                    if (this.form.kpi[i].target == '' || this.form.kpi[i].target <= 0) {
+                        isValid = false
+                        break
+                    }
+                }
+                return isValid
+            },
+            bobotValidation: function () {
+                let isValid = true
+                let count = 0
+                for (let i = 0; i < this.form.kpi.length; i++) {
+                    count = parseInt(count) + parseInt(this.form.kpi[i].bobot_kpi)
+                }
+                if (count !== 100)
+                    isValid = false
+                console.log(count)
+                return isValid
+            },
+            addKPI: async function () {
+                if (this.form.id_divisi == 0)
+                    toastr.warning("Silahkan pilih divisinya terlebih dahulu!")
+                else
+                    this.form.kpi.push({
+                        id: Date.now(),
+                        id_divisi: this.form.id_divisi,
+                        sasaran_kerja: '',
+                        kpi: '',
+                        bobot_kpi: '',
+                        target: ''
+                    })
+            },
+            deleteKPI: function (id) {
+                this.form.kpi = this.form.kpi.filter(e => e.id != id);
+            },
+            onSave: async function () {
+                try {
+                    //Method Insert
+                    if (this.form.id_divisi == 0) {
+                        toastr.warning("Silahkan pilih divisinya!")
+                        return
+                    }
+                    if (this.form.kpi.length <= 0) {
+                        toastr.warning("Harus ada setidaknya minimal 1 KPI!")
+                        return
+                    }
+                    if (!this.validation()) {
+                        toastr.warning("Harap isi semua form yang wajib diisi!")
+                        return
+                    }
+                    if (!this.bobotValidation()) {
+                        toastr.warning("Total bobot KPI harus 100%")
+                        return
+                    }
+                    let formData = this.form
+                    let result = await fetch('/api/kpi', {
+                        method: 'PUT',
+                        body: JSON.stringify(formData),
+                        headers: {'Content-Type': "application/json"}
+                    })
+                    let data = await result.json()
+                    if (data.code > 0) {
+                        toastr.success(data.message)
+                        setTimeout(() => {
+                            let context = this
+                            window.removeEventListener('beforeunload', context.leaving, true)
+                            window.location = "/hr/kpi"
+                        }, 1000)
+                    } else
+                        toastr.error(data.message)
+                    //endif
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+        },
+        mounted() {
+            this.loadData()
+        }
+    })
+</script>

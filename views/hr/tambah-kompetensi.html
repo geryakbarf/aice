@@ -1,0 +1,136 @@
+<%- include('./partials/header.html') %>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <!-- Left navbar links -->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            </li>
+        </ul>
+
+        <!-- Right navbar links -->
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                </a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+                <a href="/hr/logout" class="nav-link">Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+    <%- include('./partials/left-navbar.html') %>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid" id="form-kompetensi">
+                <!-- Small boxes (Stat box) -->
+                <div class="row">
+                    <div class="col">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Tambah Data Kompetensi Kerja Baru</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="kompetensi">Kompetensi</label>
+                                    <input type="text" class="form-control" name="kompetensi" id="kompetensi"
+                                           placeholder="Contoh : Tingkat Disiplin" v-model="form.kompetensi" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Detail (Opsional)</label>
+                                    <textarea name="detail" id="detail" class="form-control" rows="5"
+                                              placeholder="Masukkan detail dari kompetensi kerja ini"
+                                              spellcheck="false" v-model="form.detail"></textarea>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary" v-on:click="onSave()">Submit</button>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<footer class="main-footer">
+    <strong>Copyright &copy; 2021 Gery Akbar Fauzi - UNIKOM</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+        <b>Version</b> 1.0
+    </div>
+</footer>
+<%- include('./partials/footer.html') %>
+<script type="application/javascript">
+    var app = new Vue({
+        el: '#form-kompetensi',
+        data: {
+            form: {
+                kompetensi: "",
+                detail: null,
+            }
+        },
+        methods: {
+            validation: function () {
+                let isValid = true
+                if (this.form.kompetensi === "")
+                    isValid = false
+                return isValid
+            },
+            onSave: async function () {
+                try {
+                    //Method Insert
+                    if (!this.validation()) {
+                        toastr.warning("Harap isi semua form yang wajib diisi!")
+                        return
+                    }
+                    let formData = this.form
+                    let result = await fetch('/api/kompetensi', {
+                        method: 'POST',
+                        body: JSON.stringify(formData),
+                        headers: {'Content-Type': "application/json"}
+                    })
+                    let data = await result.json()
+                    if (data.code > 0) {
+                        toastr.success(data.message)
+                        setTimeout(() => {
+                            let context = this
+                            window.removeEventListener('beforeunload', context.leaving, true)
+                            window.location = "/hr/kompetensi"
+                        }, 1000)
+                    } else
+                        toastr.error(data.message)
+                    //endif
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+        },
+        mounted() {
+
+        }
+    })
+</script>

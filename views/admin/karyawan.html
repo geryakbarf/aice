@@ -69,7 +69,7 @@
                   <td><%= data.divisi; %></td>
                   <td><%= data.bagian; %></td>
                   <td><%= data.jabatan; %> </td>
-                  <td> <a href="/admin/edit-karyawan?nip=<%= data.nip %>" <button type="button" class="btn btn-block btn-primary">Edit</button></a></td>
+                  <td> <a href="/admin/edit-karyawan?nip=<%= data.nip %>"> <button type="button" class="btn btn-block btn-primary">Edit</button></a></td>
                 </tr>
                 <% } %>
                 <% } %>
@@ -96,7 +96,7 @@
         $('#example2').dataTable({
           "paging": true,
           "lengthChange": false,
-          "searching": false,
+          "searching": true,
           "ordering": true,
           "info": true,
           "autoWidth": false,

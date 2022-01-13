@@ -5,6 +5,9 @@ const Bagian = require('../controller/bagian');
 const Karyawan = require('../controller/karyawan');
 const Upload = require('../upload');
 const Absensi = require('../controller/absensi')
+const Kompetensi = require('../controller/kompetensi')
+const KPI = require('../controller/kpi')
+const Penilaian = require('../controller/penilaian')
 
 //Area API Divisi
 router.post('/divisi', Divisi.addDivisi);
@@ -14,8 +17,8 @@ router.get('/divisi', Divisi.getAllDivision)
 
 //Area API bagian
 router.post('/bagian', Bagian.addBagian);
-router.post('/edit-bagian', Bagian.editBagian);
-router.get('/get-bagian', Bagian.getAllBagian);
+router.put('/bagian', Bagian.editBagian);
+router.get('/get-bagian/:id', Bagian.getAllBagian);
 
 //Area Karyawan
 router.post('/upload-image', Upload.uploadImage);
@@ -35,5 +38,21 @@ router.post('/detail-absensi/qr', Absensi.absensiQR)
 //Area API Android
 router.post('/android/login', Karyawan.loginKaryawan)
 router.post('/android/karyawan', Karyawan.registerKaryawan)
+
+//Area kompetensi
+router.post('/kompetensi', Kompetensi.tambahKompetensi)
+router.put('/kompetensi', Kompetensi.updateKompetensi)
+router.get('/kompetensi', Kompetensi.getAllKompetensi)
+
+//Area KPI
+router.post('/kpi', KPI.tambahKPI)
+router.get('/kpi/:id', KPI.getOneKPI)
+router.put('/kpi', KPI.editKPI)
+
+//Area Penilaian
+router.post('/penilaian', Penilaian.insertPenialain)
+router.get('/penilaian/:id', Penilaian.getOnePenilaian)
+router.get('/penilaian/kpi/:id', Penilaian.getPenilaianKPI)
+router.get('/penilaian/kompetensi/:id', Penilaian.getPenilaianKompetensi)
 
 module.exports = router;

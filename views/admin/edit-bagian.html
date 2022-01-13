@@ -39,43 +39,35 @@
 
         <!-- Main content -->
         <section class="content">
-            <div class="container-fluid">
+            <div class="container-fluid" id="form-bagian">
                 <!-- Small boxes (Stat box) -->
                 <div class="row">
                     <div class="col">
                         <div class="card card-primary">
                             <div class="card-header">
-                                <h3 class="card-title">Tambah Data Bagian Divisi Baru</h3>
+                                <h3 class="card-title">Edit Data Bagian Divisi Baru</h3>
                             </div>
-                            <!-- /.card-header -->
-                            <!-- form start -->
-                            <form name="form" method="post" action="/api/edit-bagian">
-                                <input type="hidden" name="id" id="id" value="<%= json.id %>">
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label for="nama">Nama</label>
                                         <input type="name" class="form-control" name="nama" id="nama"
                                                placeholder="Masukkan Nama Bagian" required
-                                               value="<%= json.nama %>">
+                                               v-model="form.nama">
                                     </div>
                                     <div class="form-group">
                                         <label>Bagian Dari Divisi Mana ?</label>
-                                        <select class="form-control" name="divisi" id="divisi" required>
-                                            <option value="" disabled selected><% if(result.length > 0) { %> Silahkan
+                                        <select class="form-control" name="divisi" id="divisi" v-model="form.id_divisi" required>
+                                            <option value="" disabled><% if(result.length > 0) { %> Silahkan
                                                 pilih <% } else { %> Belum ada data divisi <% } %>
                                             </option>
-                                            <% for(data of result) { %>
-                                            <option value="<%= data.id %>"
-                                            <%= locals.json.id_divisi == data.id ? 'selected': ''%>> <%= data.nama %></
-                                        <option>
-                                            <% } %>
+                                           <option v-for="data in divisi" v-bind:value="data.id"> {{data.nama}} </option>
                                             </select>
                                     </div>
                                     <div class="bootstrap-timepicker">
                                         <div class="form-group">
                                             <label>Jam Masuk (Format 24 Jam)</label>
                                             <div class="input-group date">
-                                                <input value="<%= json.jam_masuk %>" type="time" class="form-control"
+                                                <input v-model="form.jam_masuk" type="time" class="form-control"
                                                        name="jam_masuk" id="jam_masuk" required/>
                                             </div>
                                             <!-- /.input group -->
@@ -86,7 +78,7 @@
                                         <div class="form-group">
                                             <label>Jam Keluar (Format 24 Jam)</label>
                                             <div class="input-group date">
-                                                <input value="<%= json.jam_keluar %>" type="time" class="form-control"
+                                                <input v-model="form.jam_keluar" type="time" class="form-control"
                                                        name="jam_keluar" id="jam_keluar" required/>
                                             </div>
                                             <!-- /.input group -->
@@ -96,27 +88,25 @@
                                     <!-- select -->
                                     <div class="form-group">
                                         <label>Apakah Bagian Ini Memiliki Jam Lembur ?</label>
-                                        <select class="form-control" name="lembur" id="lembur" required>
+                                        <select class="form-control" name="lembur" id="lembur"
+                                                v-model="form.lembur" required>
                                             <option value="" disabled selected> Silahkan pilih</option>
-                                            <option value="Ya"
-                                            <%= json.lembur == 'Ya' ? 'selected': ''%>>Ya</option>
-                                            <option value="Tidak"
-                                            <%= json.lembur == 'Tidak' ? 'selected': ''%>>Tidak</option>
+                                            <option value="Ya">Ya</option>
+                                            <option value="Tidak">Tidak</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label>Jobdesk (Opsional)</label>
                                         <textarea name="jobdesk" id="jobdesk" class="form-control" rows="5"
                                                   placeholder="Masukkan jobdesk dari bagian ini"
-                                                  spellcheck="false"></textarea>
+                                                  spellcheck="false" v-model="form.jobdesk"></textarea>
                                     </div>
                                 </div>
                                 <!-- /.card-body -->
 
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" class="btn btn-primary" v-on:click="onSave()">Submit</button>
                                 </div>
-                            </form>
                         </div>
                         <!-- ./col -->
                     </div>
@@ -134,23 +124,13 @@
         <b>Version</b> 1.0
     </div>
 </footer>
-<script>
-    window.onload = function () {
-        document.getElementById("jobdesk").defaultValue = "<%= json.jobdesk %>";
-    }
+<script type="application/javascript">
+    let idBagian = <%= json.id %>;
+    let idDivisi = <%= json.id_divisi %>;
+    let namaBagian = "<%= json.nama %>";
+    let lemburBagian = "<%= json.lembur %>";
+    let jamMasukBagian = "<%= json.jam_masuk %>";
+    let jamKeluarBagian = "<%= json.jam_keluar %>";
+    let jobDesk = "<%= json.jobdesk %>";
 </script>
-<% if(locals.error == "ada") { %>
-<script>
-    window.onload = function () {
-        alert("Nama bagian sudah ada di basis data! Mohon untuk menggantinya lagi!");
-    }
-</script>
-<% } %>
-<% if(locals.error == "db") { %>
-<script>
-    window.onload = function () {
-        alert("Terjadi kesalahan saat mengubah data bagian! Mohon hubungi super admin!");
-    }
-</script>
-<% } %>
 <%- include('./partials/footer.html') %>

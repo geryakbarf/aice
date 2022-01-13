@@ -39,14 +39,19 @@ const renderAllBagianPage = async (req, res) => {
 
 const renderEditBagianPage = async (req, res) => {
     let connect = DB.config;
-    let aksi = "";
     let id = req.query.id;
     const photo = "http://localhost:3000/assets/uploads" + req.session.photoAdmin;
     const nama = req.session.namaAdmin;
+    const loadCSS = [
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"}
+    ];
     const loadJS = [
         {src: "https://code.jquery.com/jquery-3.6.0.min.js"},
+        {src: "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"},
         {src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"},
         {src: "https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"},
+        {src: "/assets/js/form-bagian.js"}
     ];
     connect.query("SELECT * FROM bagian WHERE id = ?", [id], (error, result, field) => {
         if (!error) {
@@ -67,7 +72,8 @@ const renderEditBagianPage = async (req, res) => {
                         json,
                         result: result2,
                         nama,
-                        photo
+                        photo,
+                        loadCSS
                     });
                 }//endif kedua
             });
@@ -99,8 +105,9 @@ const addBagian = async (req, res) => {
 
 const getAllBagian = async (req, res) => {
     let connect = DB.config;
+    let id = req.params.id
     //query
-    connect.query("SELECT bagian.id, bagian.nama, divisi.nama AS divisi FROM bagian JOIN divisi ON bagian.id_divisi = divisi.id", (err, result, field) => {
+    connect.query("SELECT bagian.id, bagian.nama, divisi.nama AS divisi FROM bagian JOIN divisi ON bagian.id_divisi = divisi.id WHERE divisi.id = ?", [id], (err, result, field) => {
         if (!err)
             res.json(result);
     })
@@ -108,28 +115,16 @@ const getAllBagian = async (req, res) => {
 
 const editBagian = async (req, res) => {
     let data = req.body;
-    let connect = DB.config;
-    //Query Pengecekan
-    connect.query("SELECT * FROM bagian WHERE nama = ?", [data.nama], (err, result, field) => {
-        if (!err) {
-            //Jika nama divisi sudah ada di database
-            if (result.length > 0)
-                return res.redirect("/admin/edit-bagian?id=" + data.id + "&error=ada")
-            else {
-                if (updateBagian(data))
-                    return res.redirect("/admin/bagian")
-                else
-                    return res.redirect("/admin/edit-bagian?id=" + data.id + "&error=db")
-            }//endif
-        } else
-            return res.redirect("/admin/edit-bagian?id=" + data.id + "&error=db")
-    })
+    if (updateBagian(data))
+        return res.json({code: 1, message: "Berhasil memperbarui data bagian!"})
+    else
+        return res.json({code: 0, message: "Terjadi kesalahan, harap hubungi admin!"})
 }
 
 async function insertBagian(data) {
     const connect = DB.config;
     let jobdesk = null;
-    if (data.jobdesk != null || data.jobdesk != undefinied || data.jobdesk !== "")
+    if (data.jobdesk !== null || data.jobdesk !== undefined || data.jobdesk !== "")
         jobdesk = data.jobdesk;
     let query = "INSERT INTO bagian(nama,id_divisi,lembur,jam_masuk,jam_keluar, jobdesk) VALUES(?,?,?,?,?,?)";
     connect.query(query, [data.nama, data.id_divisi, data.lembur, data.jam_masuk, data.jam_keluar, jobdesk], (err, result, field) => {
@@ -142,11 +137,12 @@ async function insertBagian(data) {
 
 async function updateBagian(data) {
     const connect = DB.config;
+    console.log(data.jobdesk)
     let jobdesk = null;
-    if (data.jobdesk != null || data.jobdesk != undefinied)
+    if (data.jobdesk !== null || data.jobdesk !== undefined || data.jobdesk !== "")
         jobdesk = data.jobdesk;
     let query = "UPDATE bagian SET nama = ?, id_divisi = ?, lembur = ?, jam_masuk = ?, jam_keluar = ?, jobdesk = ? WHERE id = ?";
-    connect.query(query, [data.nama, data.divisi, data.lembur, data.jam_masuk, data.jam_keluar, jobdesk, data.id], (err, result, field) => {
+    connect.query(query, [data.nama, data.id_divisi, data.lembur, data.jam_masuk, data.jam_keluar, jobdesk, data.id], (err, result, field) => {
         if (!err)
             return true
         else

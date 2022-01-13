@@ -155,7 +155,7 @@ const updateKaryawan = async (req, res) => {
 const getKaryawan = async (req, res) => {
     let connect = DB.config;
     let {nip} = req.params;
-    connect.query("SELECT * FROM karyawan WHERE nip = ?", [nip], (err, result, field) => {
+    connect.query("SELECT karyawan.nip, karyawan.id_bagian, karyawan.nama, karyawan.email, karyawan.jabatan, karyawan.photo, karyawan.alamat, karyawan.nomor_kontak, bagian.id_divisi FROM karyawan JOIN bagian ON karyawan.id_bagian = bagian.id WHERE karyawan.nip = ?", [nip], (err, result, field) => {
         return res.json({
             nip: nip,
             id_bagian: result[0].id_bagian,
@@ -164,7 +164,8 @@ const getKaryawan = async (req, res) => {
             jabatan: result[0].jabatan,
             photo: result[0].photo,
             alamat: result[0].alamat,
-            nomor_kontak: result[0].nomor_kontak
+            nomor_kontak: result[0].nomor_kontak,
+            id_divisi: result[0].id_divisi
         });
     });
 }
