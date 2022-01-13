@@ -66,7 +66,7 @@
                                 <div class="form-group">
                                     <label>Dari Divisi Mana ?</label>
                                     <select class="form-control" name="id_divisi" id="id_divisi"
-                                            v-model="form.id_divisi" v-on:change="loadBagian($event)" required>
+                                            v-on:change="loadBagian($event)" required>
                                         <option value="0" disabled selected>Pilih Daria Divisi Mana</option>
                                         <option v-bind:value="data.id" v-for="data in divisi">{{data.nama}}
                                         </option>
@@ -75,7 +75,7 @@
                                 <div class="form-group">
                                     <label>Dari Bagian Mana ?</label>
                                     <select class="form-control" name="id_bagian" id="id_bagian"
-                                            v-model="form.id_divisi" required>
+                                            v-model="form.id_bagian" required>
                                         <option value="0" disabled selected>Pilih Daria Bagian Mana</option>
                                         <option v-bind:value="data.id" v-for="data in bagian">{{data.nama}} - Divisi
                                             {{data.divisi}}
@@ -116,6 +116,7 @@
                     <!-- /.row -->
 
                 </div>
+            </div>
         </section>
     </div>
 </div>

@@ -43,69 +43,89 @@
       <div class="row">
         <div class="col">
           <div class="card card-primary" id="form-karyawan-update">
-              <div class="card-header">
-                <h3 class="card-title">Ubah Data Karyawan</h3>
-              </div>
-              <!-- /.card-header -->
-                <div class="card-body">
-                  <div class="form-group">
-                    <label for="nip">NIP</label>
-                    <input type="number" class="form-control" name="nip" id="nip" placeholder="Masukkan NIP karyawan" required v-model="form.nip" readonly>
-                  </div>
-                  <div class="form-group">
-                    <label for="nama">Nama (Opsional)</label>
-                    <input type="text" class="form-control" name="nama" id="nama" placeholder="Masukkan Nama karyawan" v-model="form.nama">
-                  </div>
-                  <div class="form-group">
-                    <label for="email">Alamat Email (Opsional)</label>
-                    <input type="email" class="form-control" name="email" id="email" placeholder="Masukkan Alamat Email karyawan" v-model="form.email">
-                  </div>
-                  <div class="form-group">
-                    <label for="nomor_kontak">Nomor Kontak (Opsional)</label>
-                    <input type="number" class="form-control" name="nomor_kontak" id="nomor_kontak" placeholder="Masukkan Nomor Kontak karyawan" v-model="form.nomor_kontak">
-                  </div>
-                  <div class="form-group">
-                      <label>Alamat (Opsional)</label>
-                      <textarea name="alamat" id="alamat" class="form-control" rows="5" placeholder="Masukkan Alamat Tinggal Karyawan" spellcheck="false" v-model="form.alamat"></textarea>
-                    </div>
-                  <div class="form-group">
-                    <label>Dari Bagian Mana ?</label>
-                    <select class="form-control" name="id_bagian" id="id_bagian" v-model="form.id_bagian" required>
-                      <option value="0" disabled selected>Pilih Daria Bagian Mana</option>
-                      <option v-bind:value="data.id" v-for="data in bagian">{{data.nama}} - Divisi {{data.divisi}}</option>
-                    </select>
-                  </div>
-                      <!-- select -->
-                      <div class="form-group">
-                        <label>Jabatan (Opsional)</label>
-                        <select class="form-control" name="jabatan" id="jabatan" v-model="form.jabatan">
-                          <option value="" disabled selected> Silahkan pilih</option>
-                          <option value="Biasa">Karyawan Biasa</option>
-                          <option value="Supervisor">Supervisor</option>
-                          <option value="Manajer">Manajer</option>
-                        </select>
-                      </div>
-                        <div class="form-group">
-                    <label for="photo">Foto Karyawan (Opsional) </label>
-                    <div class="input-group">
-                      <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="photo" v-on:change="onPhotoChange">
-                        <label class="custom-file-label" id="labelphoto" for="photo">Pilih File</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- /.card-body -->
-
-                <div class="card-footer">
-                  <button type="submit" class="btn btn-primary" v-on:click="onSave()">Submit</button>
-                </div>
+            <div class="card-header">
+              <h3 class="card-title">Ubah Data Karyawan</h3>
             </div>
-        <!-- ./col -->
-      </div>
-      <!-- /.row -->
+            <!-- /.card-header -->
+            <div class="card-body">
+              <div class="form-group">
+                <label for="nip">NIP</label>
+                <input type="number" class="form-control" name="nip" id="nip"
+                       placeholder="Masukkan NIP karyawan" required v-model="form.nip" readonly>
+              </div>
+              <div class="form-group">
+                <label for="nama">Nama (Opsional)</label>
+                <input type="text" class="form-control" name="nama" id="nama"
+                       placeholder="Masukkan Nama karyawan" v-model="form.nama">
+              </div>
+              <div class="form-group">
+                <label for="email">Alamat Email (Opsional)</label>
+                <input type="email" class="form-control" name="email" id="email"
+                       placeholder="Masukkan Alamat Email karyawan" v-model="form.email">
+              </div>
+              <div class="form-group">
+                <label for="nomor_kontak">Nomor Kontak (Opsional)</label>
+                <input type="number" class="form-control" name="nomor_kontak" id="nomor_kontak"
+                       placeholder="Masukkan Nomor Kontak karyawan" v-model="form.nomor_kontak">
+              </div>
+              <div class="form-group">
+                <label>Alamat (Opsional)</label>
+                <textarea name="alamat" id="alamat" class="form-control" rows="5"
+                          placeholder="Masukkan Alamat Tinggal Karyawan" spellcheck="false"
+                          v-model="form.alamat"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Dari Divisi Mana ?</label>
+                <select class="form-control" name="id_divisi" id="id_divisi"
+                        v-model="form.id_divisi"  v-on:change="loadBagian($event)" required>
+                  <option value="0" disabled selected>Pilih Daria Divisi Mana</option>
+                  <option v-bind:value="data.id" v-for="data in divisi">{{data.nama}}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Dari Bagian Mana ?</label>
+                <select class="form-control" name="id_bagian" id="id_bagian"
+                        v-model="form.id_bagian" required>
+                  <option value="0" disabled selected>Pilih Daria Bagian Mana</option>
+                  <option v-bind:value="data.id" v-for="data in bagian">{{data.nama}} - Divisi
+                    {{data.divisi}}
+                  </option>
+                </select>
+              </div>
+              <!-- select -->
+              <div class="form-group">
+                <label>Jabatan (Opsional)</label>
+                <select class="form-control" name="jabatan" id="jabatan" v-model="form.jabatan">
+                  <option value="" disabled selected> Silahkan pilih</option>
+                  <option value="Biasa">Karyawan Biasa</option>
+                  <option value="Supervisor">Supervisor</option>
+                  <option value="Manajer">Manajer</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="photo">Foto Karyawan (Opsional) </label>
+                <div class="input-group">
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="photo"
+                           v-on:change="onPhotoChange">
+                    <label class="custom-file-label" id="labelphoto" for="photo">Pilih
+                      File</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.card-body -->
 
-  </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-primary" v-on:click="onSave()">Submit</button>
+            </div>
+          </div>
+          <!-- ./col -->
+        </div>
+        <!-- /.row -->
+
+      </div>
   </section>
   </div>
 </div>
