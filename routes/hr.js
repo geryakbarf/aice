@@ -151,7 +151,7 @@ router.get('/kompetensi', (req, res) => {
         {src: "https://cdn.datatables.net/buttons/2.0.0/js/dataTables.buttons.js"}
     ];
     //Query SELECT
-    connect.query("SELECT * FROM kompetensi_kerja", (err, result, field) => {
+    connect.query("SELECT kompetensi_kerja.id, kompetensi_kerja.kompetensi, kompetensi_kerja.detail, kompetensi_kerja.id_bagian, bagian.nama AS bagian, divisi.id AS id_divisi, divisi.nama AS divisi FROM kompetensi_kerja JOIN bagian ON bagian.id = kompetensi_kerja.id_bagian JOIN divisi ON bagian.id_divisi = divisi.id GROUP BY kompetensi_kerja.id_bagian", (err, result, field) => {
         if (!err)
             return res.render('hr/kompetensi', {
                 title: "HR - Kompetensi Kerja",
@@ -189,11 +189,15 @@ router.get('/tambah-kompetensi', (req, res) => {
     })
 })
 
-router.get("/edit-kompetensi/:id", (req, res) => {
-    let connect = DB.config;
-    let id = req.params.id;
+router.get("/edit-kompetensi/:id_divisi/:divisi/:id_bagian/:bagian", (req, res) => {
+    let connect = DB.config
+    const idDivisi = req.params.id_divisi
+    const namaDivisi = req.params.divisi
+    const idBagian = req.params.id_bagian
+    const namaBagian = req.params.bagian
     const photo = "http://localhost:3000/assets/uploads" + req.session.photoHR;
     const nama = req.session.namaHR;
+    const routePath = "/kpi";
     const loadCSS = [
         {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"}
     ];
@@ -204,20 +208,22 @@ router.get("/edit-kompetensi/:id", (req, res) => {
         {src: "https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js"},
         {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"}
     ];
-    connect.query("SELECT * FROM kompetensi_kerja WHERE id = ?", [id], (error, result, field) => {
-        if (!error) {
-            return res.render("hr/edit-kompetensi", {
-                title: "Admin - Edit Bagian",
+//Query SELECT
+    connect.query("SELECT * FROM kompetensi_kerja WHERE id_bagian = ?", [idBagian], (err, result, field) => {
+        if (!err)
+            return res.render('hr/edit-kompetensi', {
+                title: "HR - Edit Kompetensi",
+                routePath,
+                result,
                 loadJS,
-                id: result[0].id,
-                kompetensi: result[0].kompetensi,
-                detail: result[0].detail,
+                loadCSS,
                 nama,
                 photo,
-                loadCSS
-            });
-        } else
-            return res.redirect("/hr/kompetensi")
+                namaDivisi,
+                idDivisi,
+                idBagian,
+                namaBagian
+            })
     });
 })
 

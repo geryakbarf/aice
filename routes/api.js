@@ -42,7 +42,7 @@ router.post('/android/karyawan', Karyawan.registerKaryawan)
 //Area kompetensi
 router.post('/kompetensi', Kompetensi.tambahKompetensi)
 router.put('/kompetensi', Kompetensi.updateKompetensi)
-router.get('/kompetensi', Kompetensi.getAllKompetensi)
+router.get('/kompetensi/:id', Kompetensi.getAllKompetensi)
 
 //Area KPI
 router.post('/kpi', KPI.tambahKPI)

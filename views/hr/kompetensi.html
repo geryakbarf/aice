@@ -56,8 +56,8 @@
                                     <thead>
                                     <tr>
                                         <th>Nomor</th>
-                                        <th>Kompetensi</th>
-                                        <th>Detail</th>
+                                        <th>Divisi</th>
+                                        <th>Bagian</th>
                                         <th>Aksi</th>
                                     </tr>
                                     </thead>
@@ -67,9 +67,9 @@
                                     <% for(data of result) { %>
                                     <tr>
                                         <td><%= i; %></td>
-                                        <td><%= data.kompetensi; %></td>
-                                        <td><%= data.detail; %></td>
-                                        <td><a href="/hr/edit-kompetensi/<%= data.id %>">
+                                        <td><%= data.divisi; %></td>
+                                        <td><%= data.bagian; %></td>
+                                        <td><a href="/hr/edit-kompetensi/<%= data.id_divisi %>/<%= data.divisi %>/<%= data.id_bagian %>/<%= data.bagian %>">
                                             <button type="button" class="btn btn-block btn-primary">Edit</button>
                                         </a></td>
                                     </tr>

@@ -197,8 +197,8 @@
                 return isValid
             },
             addKPI: async function () {
-                if (this.form.id_divisi == 0)
-                    toastr.warning("Silahkan pilih divisinya terlebih dahulu!")
+                if (this.form.id_bagian === 0)
+                    toastr.warning("Silahkan pilih divisi dan bagiannya terlebih dahulu!")
                 else
                     this.form.kpi.push({
                         id: Date.now(),

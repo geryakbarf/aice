@@ -44,6 +44,36 @@
                 <div class="row">
                     <div class="col">
                         <div class="card card-primary">
+                            <!-- form start -->
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Dari Divisi Mana ?</label>
+                                    <select class="form-control" name="id_divisi" id="id_divisi"
+                                            v-on:change="loadBagian($event)" required>
+                                        <option value="0" disabled selected>Pilih Dari Divisi Mana</option>
+                                        <option v-bind:value="data.id" v-for="data in divisi">{{data.nama}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Dari Bagian Mana ?</label>
+                                    <select class="form-control" name="id_bagian" id="id_bagian"
+                                            v-model="form.id_bagian" required>
+                                        <option value="0" disabled selected>Pilih Dari Bagian Mana</option>
+                                        <option v-bind:value="data.id" v-for="data in bagian">{{data.nama}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- ./col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <div class="row" v-for="data in form.kompetensi">
+                    <div class="col">
+                        <div class="card card-primary">
                             <div class="card-header">
                                 <h3 class="card-title">Tambah Data Kompetensi Kerja Baru</h3>
                             </div>
@@ -53,24 +83,34 @@
                                 <div class="form-group">
                                     <label for="kompetensi">Kompetensi</label>
                                     <input type="text" class="form-control" name="kompetensi" id="kompetensi"
-                                           placeholder="Contoh : Tingkat Disiplin" v-model="form.kompetensi" required>
+                                           placeholder="Contoh : Tingkat Disiplin" v-model="data.kompetensi" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Detail (Opsional)</label>
                                     <textarea name="detail" id="detail" class="form-control" rows="5"
                                               placeholder="Masukkan detail dari kompetensi kerja ini"
-                                              spellcheck="false" v-model="form.detail"></textarea>
+                                              spellcheck="false" v-model="data.detail"></textarea>
                                 </div>
                             </div>
                             <!-- /.card-body -->
 
                             <div class="card-footer">
-                                <button type="submit" class="btn btn-primary" v-on:click="onSave()">Submit</button>
+                                <button type="submit" class="btn btn-primary" v-on:click="deleteKompetensi(data.id)">
+                                    Hapus
+                                </button>
                             </div>
                         </div>
                         <!-- ./col -->
                     </div>
                     <!-- /.row -->
+                </div>
+                <div class="card-footer">
+                    <button type="submit" style="float: right" class="btn btn-primary" v-on:click="onSave()">
+                        Simpan
+                    </button>
+                    <button type="submit" style="float: right; margin-right: 10px" class="btn btn-primary"
+                            v-on:click="addKompetensi()">Tambah Kompetensi
+                    </button>
                 </div>
             </div>
         </section>
@@ -89,22 +129,65 @@
         el: '#form-kompetensi',
         data: {
             form: {
-                kompetensi: "",
-                detail: null,
-            }
+                id_bagian: 0,
+                kompetensi: []
+            },
+            divisi: [],
+            bagian: []
         },
         methods: {
+            loadDivisi: async function () {
+                try {
+                    let res = await fetch('/api/divisi/')
+                    let data = await res.json()
+                    this.divisi = data.data
+                } catch (e) {
+                    console.log(e)
+                }
+            },
+            loadBagian: async function (event) {
+                try {
+                    let id = event.target.value
+                    let res = await fetch(`/api/get-bagian/${id}`);
+                    let data = await res.json();
+                    this.bagian = data;
+                } catch (err) {
+                    console.log(err);
+                }
+            },
             validation: function () {
                 let isValid = true
-                if (this.form.kompetensi === "")
-                    isValid = false
+                for (let i = 0; i < this.form.kompetensi.length; i++) {
+                    if (this.form.kompetensi[i].kompetensi == '') {
+                        isValid = false
+                        break
+                    }
+                }
                 return isValid
+            },
+            addKompetensi: async function () {
+                if (this.form.id_bagian === 0)
+                    toastr.warning("Silahkan pilih divisi dan bagiannya terlebih dahulu!")
+                else
+                    this.form.kompetensi.push({
+                        id: Date.now(),
+                        id_bagian: this.form.id_bagian,
+                        kompetensi: '',
+                        detail: ''
+                    })
+            },
+            deleteKompetensi: function (id) {
+                this.form.kompetensi = this.form.kompetensi.filter(e => e.id != id);
             },
             onSave: async function () {
                 try {
                     //Method Insert
                     if (!this.validation()) {
                         toastr.warning("Harap isi semua form yang wajib diisi!")
+                        return
+                    }
+                    if (this.form.kompetensi.length === 0) {
+                        toastr.warning("Harap tambahkan setidaknya satu kompetensi!")
                         return
                     }
                     let formData = this.form
@@ -130,7 +213,7 @@
             }
         },
         mounted() {
-
+            this.loadDivisi()
         }
     })
 </script>
