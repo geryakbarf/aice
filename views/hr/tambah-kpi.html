@@ -50,9 +50,18 @@
                                 <div class="form-group">
                                     <label>Dari Divisi Mana ?</label>
                                     <select class="form-control" name="id_divisi" id="id_divisi"
-                                            v-model="form.id_divisi" required>
-                                        <option value="0" disabled selected>Pilih Daria Divisi Mana</option>
+                                            v-model="form.id_divisi" v-on:change="loadBagian($event)" required>
+                                        <option value="0" disabled selected>Pilih Dari Divisi Mana</option>
                                         <option v-bind:value="data.id" v-for="data in divisi">{{data.nama}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Dari Bagian Mana ?</label>
+                                    <select class="form-control" name="id_bagian" id="id_bagian"
+                                            v-model="form.id_bagian" required>
+                                        <option value="0" disabled selected>Pilih Dari Bagian Mana</option>
+                                        <option v-bind:value="data.id" v-for="data in bagian">{{data.nama}}
                                         </option>
                                     </select>
                                 </div>
@@ -128,9 +137,11 @@
         data: {
             form: {
                 id_divisi: 0,
+                id_bagian: 0,
                 kpi: [],
             },
-            divisi: []
+            divisi: [],
+            bagian: []
         },
         methods: {
             loadDivisi: async function () {
@@ -140,6 +151,16 @@
                     this.divisi = data.data
                 } catch (e) {
                     console.log(e)
+                }
+            },
+            loadBagian: async function (event) {
+                try {
+                    let id = event.target.value
+                    let res = await fetch(`/api/get-bagian/${id}`);
+                    let data = await res.json();
+                    this.bagian = data;
+                } catch (err) {
+                    console.log(err);
                 }
             },
             validation: function () {
@@ -181,7 +202,7 @@
                 else
                     this.form.kpi.push({
                         id: Date.now(),
-                        id_divisi: this.form.id_divisi,
+                        id_bagian: this.form.id_bagian,
                         sasaran_kerja: '',
                         kpi: '',
                         bobot_kpi: '',
@@ -194,11 +215,11 @@
             onSave: async function () {
                 try {
                     //Method Insert
-                    if(this.form.id_divisi == 0){
+                    if (this.form.id_divisi == 0) {
                         toastr.warning("Silahkan pilih divisinya!")
                         return
                     }
-                    if(this.form.kpi.length <= 0){
+                    if (this.form.kpi.length <= 0) {
                         toastr.warning("Harus ada setidaknya minimal 1 KPI!")
                         return
                     }

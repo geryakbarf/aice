@@ -50,8 +50,15 @@
                                 <div class="form-group">
                                     <label>Dari Divisi Mana ?</label>
                                     <select class="form-control" name="id_divisi" id="id_divisi" required>
-                                        <option value="0" disabled>Pilih Daria Divisi Mana</option>
+                                        <option value="0" disabled>Pilih Dari Divisi Mana</option>
                                         <option value="<%= namaDivisi; %>" selected><%= namaDivisi; %></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Dari Bagian Mana ?</label>
+                                    <select class="form-control" name="id_bagian" id="id_bagian" required>
+                                        <option value="0" disabled>Pilih Dari Bagian Mana</option>
+                                        <option value="<%= namaBagian; %>" selected><%= namaBagian; %></option>
                                     </select>
                                 </div>
                             </div>
@@ -122,7 +129,9 @@
 <%- include('./partials/footer.html') %>
 <script type="application/javascript">
     let dataNama = "<%= namaDivisi %>";
-    let idDivisi = <%= id %>;
+    let idDivisi = <%= idDivisi %>;
+    let idBagian = <%= idBagian %>;
+    let dataNamaBagian = "<%= namaBagian %>";
 </script>
 <script type="application/javascript">
     var app = new Vue({
@@ -130,16 +139,18 @@
         data: {
             form: {
                 id_divisi: 0,
+                id_bagian : 0,
                 kpi: [],
             },
-            namaDivisi: ""
+            namaDivisi: "",
+            namaBagian: ""
         },
         methods: {
             loadData: async function () {
                 try {
                     this.namaDivisi = dataNama
-                    this.form.id_divisi = idDivisi
-                    let res = await fetch(`/api/kpi/${idDivisi}`)
+                    this.form.id_bagian = idBagian
+                    let res = await fetch(`/api/kpi/${idBagian}`)
                     let data = await res.json()
                     this.form.kpi = data.data
                 } catch (e) {
@@ -180,12 +191,12 @@
                 return isValid
             },
             addKPI: async function () {
-                if (this.form.id_divisi == 0)
+                if (this.form.id_bagian == 0)
                     toastr.warning("Silahkan pilih divisinya terlebih dahulu!")
                 else
                     this.form.kpi.push({
                         id: Date.now(),
-                        id_divisi: this.form.id_divisi,
+                        id_bagian: this.form.id_bagian,
                         sasaran_kerja: '',
                         kpi: '',
                         bobot_kpi: '',
@@ -198,7 +209,7 @@
             onSave: async function () {
                 try {
                     //Method Insert
-                    if (this.form.id_divisi == 0) {
+                    if (this.form.id_bagian == 0) {
                         toastr.warning("Silahkan pilih divisinya!")
                         return
                     }

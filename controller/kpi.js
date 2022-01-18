@@ -4,7 +4,7 @@ const getOneKPI = async (req, res) => {
     try {
         let connect = DB.config
         let id = req.params.id
-        connect.query("SELECT * FROM kpi WHERE id_divisi = ?", [id], (err, result) => {
+        connect.query("SELECT * FROM kpi WHERE id_bagian = ?", [id], (err, result) => {
             if (!err)
                 return res.json({
                     code: 1,
@@ -26,15 +26,15 @@ const editKPI = async (req, res) => {
     try {
         let connect = DB.config
         let kpi = req.body.kpi
-        let id_divisi = req.body.id_divisi
+        let id_bagian = req.body.id_bagian
         let count = 0
         //Delete data lama
-        connect.query("DELETE FROM kpi WHERE id_divisi = ?", [id_divisi], (err, result) => {
+        connect.query("DELETE FROM kpi WHERE id_bagian = ?", [id_bagian], (err, result) => {
             if (!err) {
                 if (kpi.length > 0) {
                     let sql = 'INSERT INTO kpi VALUES'
                     kpi.forEach(kpi => {
-                        sql += '(' + kpi.id + ',' + kpi.id_divisi + ',"' + kpi.sasaran_kerja + '","' + kpi.kpi + '",' + kpi.bobot_kpi + ',' + kpi.target + '),'
+                        sql += '(' + kpi.id + ',' + kpi.id_bagian + ',"' + kpi.sasaran_kerja + '","' + kpi.kpi + '",' + kpi.bobot_kpi + ',' + kpi.target + '),'
                     })
                     sql = sql.slice(0, -1)
                     console.log(sql)
@@ -71,10 +71,10 @@ const tambahKPI = async (req, res) => {
     try {
         let connect = DB.config
         let kpi = req.body.kpi
-        let id_divisi = req.body.id_divisi
+        let id_bagian = req.body.id_bagian
         let count = 0
         //Pengecekan
-        connect.query("SELECT * FROM kpi WHERE id_divisi = ?", [id_divisi], (err, result) => {
+        connect.query("SELECT * FROM kpi WHERE id_bagian = ?", [id_bagian], (err, result) => {
             if (result.length > 0)
                 return res.json({
                     code: 0,
@@ -85,7 +85,7 @@ const tambahKPI = async (req, res) => {
                 if (kpi.length > 0) {
                     let sql = 'INSERT INTO kpi VALUES'
                     kpi.forEach(kpi => {
-                        sql += '(' + kpi.id + ',' + kpi.id_divisi + ',"' + kpi.sasaran_kerja + '","' + kpi.kpi + '",' + kpi.bobot_kpi + ',' + kpi.target + '),'
+                        sql += '(' + kpi.id + ',' + kpi.id_bagian + ',"' + kpi.sasaran_kerja + '","' + kpi.kpi + '",' + kpi.bobot_kpi + ',' + kpi.target + '),'
                     })
                     sql = sql.slice(0, -1)
                     console.log(sql)

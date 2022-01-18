@@ -234,7 +234,7 @@
 </footer>
 <%- include('./partials/footer.html') %>
 <script>
-    let idDivisi = <%= result[0].id_divisi %>;
+    let idBagian = <%= result[0].id_bagian %>;
     let nipKaryawan = <%= result[0].nip %>;
 </script>
 <script type="application/javascript">
@@ -244,7 +244,7 @@
             form: {
                 id : '',
                 nip : '',
-                id_divisi: 0,
+                id_bagian: 0,
                 kompetensi: [],
                 detail: null,
                 kpi: [],
@@ -303,14 +303,14 @@
                 }
             },
             loadKPIDivisi: async function () {
-                this.form.id_divisi = idDivisi
-                let res = await fetch(`/api/kpi/${idDivisi}`)
+                this.form.id_bagian = idBagian
+                let res = await fetch(`/api/kpi/${idBagian}`)
                 let data = await res.json()
                 let result = data.data
                 for (let i = 0; i < result.length; i++) {
                     let data = {
                         id: result[i].id,
-                        id_divisi: result[i].id_divisi,
+                        id_bagian: result[i].id_bagian,
                         sasaran_kerja: result[i].sasaran_kerja,
                         kpi: result[i].kpi,
                         bobot_kpi: result[i].bobot_kpi,

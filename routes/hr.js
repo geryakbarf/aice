@@ -243,7 +243,7 @@ router.get('/kpi', (req, res) => {
         {src: "https://cdn.datatables.net/buttons/2.0.0/js/dataTables.buttons.js"}
     ];
     //Query SELECT
-    connect.query("SELECT divisi.nama, divisi.id FROM divisi JOIN kpi ON divisi.id = kpi.id_divisi GROUP BY divisi.id", (err, result, field) => {
+    connect.query("SELECT kpi.id, kpi.id_bagian, divisi.id AS id_divisi, sasaran_kerja, kpi, bobot_kpi, target, bagian.nama AS bagian, divisi.nama AS divisi FROM kpi JOIN bagian ON bagian.id = kpi.id_bagian JOIN divisi ON divisi.id = bagian.id_divisi GROUP BY kpi.id_bagian", (err, result, field) => {
         if (!err)
             return res.render('hr/kpi', {
                 title: "HR - Key Performance Index",
@@ -281,10 +281,12 @@ router.get('/tambah-kpi', (req, res) => {
     })
 })
 
-router.get('/edit-kpi/:id/:nama', (req, res) => {
+router.get('/edit-kpi/:id_divisi/:divisi/:id_bagian/:bagian', (req, res) => {
     let connect = DB.config
-    const id = req.params.id
-    const namaDivisi = req.params.nama
+    const idDivisi = req.params.id_divisi
+    const namaDivisi = req.params.divisi
+    const idBagian = req.params.id_bagian
+    const namaBagian = req.params.bagian
     const photo = "http://localhost:3000/assets/uploads" + req.session.photoHR;
     const nama = req.session.namaHR;
     const routePath = "/kpi";
@@ -299,7 +301,7 @@ router.get('/edit-kpi/:id/:nama', (req, res) => {
         {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"}
     ];
     //Query SELECT
-    connect.query("SELECT * FROM kpi WHERE id_divisi = ?", [id], (err, result, field) => {
+    connect.query("SELECT * FROM kpi WHERE id_bagian = ?", [idBagian], (err, result, field) => {
         if (!err)
             return res.render('hr/edit-kpi', {
                 title: "HR - Edit KPI",
@@ -310,7 +312,9 @@ router.get('/edit-kpi/:id/:nama', (req, res) => {
                 nama,
                 photo,
                 namaDivisi,
-                id
+                idDivisi,
+                idBagian,
+                namaBagian
             })
     });
 })

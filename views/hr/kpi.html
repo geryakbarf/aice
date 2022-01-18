@@ -57,6 +57,7 @@
                                     <tr>
                                         <th>Nomor</th>
                                         <th>Divisi</th>
+                                        <th>Bagian</th>
                                         <th>Aksi</th>
                                     </tr>
                                     </thead>
@@ -66,10 +67,12 @@
                                     <% for(data of result) { %>
                                     <tr>
                                         <td><%= i; %></td>
-                                        <td><%= data.nama; %></td>
-                                        <td><a href="/hr/edit-kpi/<%= data.id %>/<%= data.nama %>">
-                                            <button type="button" class="btn btn-block btn-primary">Edit</button>
-                                        </a></td>
+                                        <td><%= data.divisi; %></td>
+                                        <td><%= data.bagian; %></td>
+                                        <td>
+                                            <a href="/hr/edit-kpi/<%= data.id_divisi %>/<%= data.divisi %>/<%= data.id_bagian %>/<%= data.bagian %>">
+                                                <button type="button" class="btn btn-block btn-primary">Edit</button>
+                                            </a></td>
                                     </tr>
                                     <% i++; %>
                                     <% } %>
