@@ -323,7 +323,7 @@
                 }
             },
             loadKompetensi: async function () {
-                let res = await fetch(`/api/kompetensi`)
+                let res = await fetch(`/api/kompetensi/${idBagian}`)
                 let data = await res.json()
                 let result = data.data
                 for (let i = 0; i < result.length; i++) {
