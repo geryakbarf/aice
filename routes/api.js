@@ -26,6 +26,7 @@ router.post('/tambah-karyawan', Karyawan.tambahKaryawan);
 router.get('/get-karyawan/:nip', Karyawan.getKaryawan);
 router.put('/update-karyawan', Karyawan.updateKaryawan);
 router.post('/login/hr', Karyawan.loginHR)
+router.get('/karyawan/get-all-karyawan', Karyawan.getAllKaryawan)
 
 //Area API Main Absensi
 router.get('/main-absensi', Absensi.getMainAbsensi)
@@ -54,5 +55,6 @@ router.post('/penilaian', Penilaian.insertPenialain)
 router.get('/penilaian/:id', Penilaian.getOnePenilaian)
 router.get('/penilaian/kpi/:id', Penilaian.getPenilaianKPI)
 router.get('/penilaian/kompetensi/:id', Penilaian.getPenilaianKompetensi)
+router.get('/penilaian/validasi/:nip', Penilaian.validasiPenilaian)
 
 module.exports = router;

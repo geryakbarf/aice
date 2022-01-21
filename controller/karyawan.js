@@ -263,6 +263,19 @@ const registerKaryawan = async (req, res) => {
     })
 }
 
+const getAllKaryawan = async (req, res) => {
+    let connect = DB.config
+    try {
+        connect.query("SELECT karyawan.nip, karyawan.nama, divisi.nama AS divisi, bagian.nama AS bagian, karyawan.jabatan FROM karyawan JOIN bagian ON bagian.id = karyawan.id_bagian JOIN divisi ON bagian.id_divisi = divisi.id ORDER BY karyawan.nip ASC", (error, result) => {
+            return res.json({
+                data: result
+            })
+        })
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 module.exports = {
     renderKaryawanPage,
     tambahKaryawan,
@@ -271,5 +284,6 @@ module.exports = {
     login,
     loginKaryawan,
     registerKaryawan,
-    loginHR
+    loginHR,
+    getAllKaryawan
 }

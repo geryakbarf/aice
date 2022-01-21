@@ -86,9 +86,38 @@ const getPenilaianKompetensi = async (req, res) => {
     }
 }
 
+const validasiPenilaian = async (req, res) => {
+    let connect = DB.config
+    let nip = req.params.nip
+    try {
+        connect.query("SELECT * FROM penilaian WHERE nip = ? AND MONTH(tanggal) = MONTH(CURRENT_DATE()) AND YEAR(tanggal) = YEAR(CURRENT_DATE())", [nip], (error, result) => {
+            if (result.length > 0)
+                return res.json({code: 0, message: "Karyawan ini sudah dinilai pada bulan ini!"})
+            else {
+                //Mengambil id_bagian dari tabel karyawan
+                connect.query("SELECT * FROM karyawan WHERE nip = ?", [nip], (error1, result1) => {
+                    //Mengecek apakah bagian sudah memiliki KPI dan Kompetensi Kerja Belum
+                    connect.query("SELECT kompetensi_kerja.id_bagian, kpi.id_bagian FROM kompetensi_kerja JOIN kpi ON kompetensi_kerja.id_bagian = kpi.id_bagian WHERE kpi.id_bagian = ?", [result1[0].id_bagian], (error2, result2) => {
+                        if (result2.length > 0)
+                            return res.json({code: 1})
+                        else
+                            return res.json({
+                                code: 0,
+                                message: "Maaf, bagian karyawan ini belum memiliki KPI atau kompetensi kerja, silahkan tambahkan terlebih dahulu!"
+                            })
+                    })
+                })
+            }
+        })
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 module.exports = {
     insertPenialain,
     getOnePenilaian,
     getPenilaianKPI,
-    getPenilaianKompetensi
+    getPenilaianKompetensi,
+    validasiPenilaian
 }

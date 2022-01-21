@@ -42,7 +42,7 @@
         <!-- /.content-header -->
 
         <!-- Main content -->
-        <section class="content">
+        <section class="content" id="form-karyawan">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
@@ -64,23 +64,20 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <% if(locals.result) { %>
-                                    <% for(data of result) { %>
-                                    <tr>
-                                        <td><%= data.nip; %></td>
-                                        <td><%= data.nama; %></td>
-                                        <td><%= data.divisi; %></td>
-                                        <td><%= data.bagian; %></td>
-                                        <td><%= data.jabatan; %></td>
-                                        <td><a href="/hr/edit-karyawan/<%= data.nip %>">
+                                    <tr v-for="(data,index) in karyawan">
+                                        <td>{{data.nip}}</td>
+                                        <td>{{data.nama}}</td>
+                                        <td>{{data.divisi}}</td>
+                                        <td>{{data.bagian}}</td>
+                                        <td>{{data.jabatan}}</td>
+                                        <td><a v-bind:href="'/hr/edit-karyawan/'+data.nip">
                                             <button type="button" class="btn btn-block btn-primary">Edit</button>
                                         </a><br>
-                                            <a href="/hr/penilaian/<%= data.nip %>">
-                                                <button type="button" class="btn btn-block btn-primary">Nilai</button>
-                                            </a></td>
+                                            <button v-on:click="validasi(data.nip)" type="button"
+                                                    class="btn btn-block btn-primary">Nilai
+                                            </button>
+                                        </td>
                                     </tr>
-                                    <% } %>
-                                    <% } %>
                                     </tbody>
                                 </table>
                             </div>
@@ -98,20 +95,55 @@
         <b>Version</b> 1.0
     </div>
 </footer>
-<script>
-    window.onload = function () {
-        if (window.jQuery) {
-            $('#example2').dataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        }
-    }
-</script>
 </body>
 <%- include('./partials/footer.html') %>
+<script type="application/javascript">
+    var app = new Vue({
+        el: '#form-karyawan',
+        data: {
+            karyawan: []
+        },
+        methods: {
+            validasi: async function (nip) {
+                try {
+                    const res = await fetch(`/api/penilaian/validasi/${nip}`)
+                    const data = await res.json()
+                    if (data.code === 0)
+                        toastr.error(data.message)
+                    else
+                        window.location.href = "/hr/penilaian/" + nip
+                } catch (e) {
+                    console.log(e)
+                }
+            },
+            loadKaryawan: async function () {
+                try {
+                    const res = await fetch(`/api/karyawan/get-all-karyawan`)
+                    const data = await res.json()
+                    this.karyawan = data.data
+                    $('#example2').DataTable().destroy()
+                    setTimeout(() => {
+                        this.$nextTick(function () {
+                            $('#example2').DataTable({
+                                "destroy": true,
+                                "retrieve": true,
+                                "paging": true,
+                                "lengthChange": true,
+                                "searching": true,
+                                "ordering": true,
+                                "info": true,
+                                "autoWidth": false,
+                                "responsive": true,
+                            });
+                        })
+                    }, 300)
+                } catch (e) {
+
+                }
+            },
+        },
+        mounted() {
+            this.loadKaryawan()
+        }
+    })
+</script>
