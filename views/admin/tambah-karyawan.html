@@ -63,6 +63,11 @@
                                     <input type="email" class="form-control" name="email" id="email"
                                            placeholder="Masukkan Alamat Email karyawan" v-model="form.email">
                                 </div>
+                                <div class="form-group" v-if="form.email.length > 0">
+                                    <label for="nama">Password (Wajib Diisi untuk Admin)</label>
+                                    <input type="password" class="form-control" name="password" id="password"
+                                           placeholder="Masukkan Password" v-model="form.password">
+                                </div>
                                 <div class="form-group">
                                     <label>Dari Divisi Mana ?</label>
                                     <select class="form-control" name="id_divisi" id="id_divisi"
@@ -90,6 +95,7 @@
                                         <option value="Biasa">Karyawan Biasa</option>
                                         <option value="Leader / Koordinator">Team Leader / Koordinator</option>
                                         <option value="Supervisor">Supervisor</option>
+                                        <option value="Assistant Manager">Assistant Manager</option>
                                         <option value="Manajer">Manajer</option>
                                     </select>
                                 </div>

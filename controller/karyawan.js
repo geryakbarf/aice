@@ -71,18 +71,22 @@ const renderKaryawanPage = async (req, res) => {
         {src: "https://cdn.datatables.net/buttons/2.0.0/js/dataTables.buttons.js"}
     ];
     //Query Select
-    connect.query("SELECT karyawan.nip, karyawan.nama, divisi.nama AS divisi, bagian.nama AS bagian, karyawan.jabatan FROM karyawan JOIN bagian ON bagian.id = karyawan.id_bagian JOIN divisi ON bagian.id_divisi = divisi.id ORDER BY karyawan.nip ASC;", (err, result, field) => {
-        if (!err)
-            return res.render('admin/karyawan', {
-                title: "Admin - Karyawan",
-                loadJS,
-                loadCSS,
-                routePath,
-                result,
-                nama,
-                photo
-            });
-    })
+    try {
+        connect.query("SELECT karyawan.nip, karyawan.nama, divisi.nama AS divisi, bagian.nama AS bagian, karyawan.jabatan FROM karyawan JOIN bagian ON bagian.id = karyawan.id_bagian JOIN divisi ON bagian.id_divisi = divisi.id ORDER BY karyawan.nip ASC;", (err, result, field) => {
+            if (!err)
+                return res.render('admin/karyawan', {
+                    title: "Admin - Karyawan",
+                    loadJS,
+                    loadCSS,
+                    routePath,
+                    result,
+                    nama,
+                    photo
+                });
+        })
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 const tambahKaryawan = async (req, res) => {
@@ -92,6 +96,7 @@ const tambahKaryawan = async (req, res) => {
         let email = null;
         let jabatan = null;
         let photo = null;
+        let password = null;
         //
         if (req.body.nama)
             nama = data.nama;
@@ -101,6 +106,8 @@ const tambahKaryawan = async (req, res) => {
             jabatan = data.jabatan;
         if (req.body.photo)
             photo = data.photo;
+        if (req.body.password)
+            password = data.password
         //
         let connect = DB.config;
         //Pengecekan nip
@@ -108,13 +115,23 @@ const tambahKaryawan = async (req, res) => {
             if (result.length > 0)
                 return res.json({code: 0, message: "Data nip sudah ada!"})
             else {
-                connect.query("INSERT INTO karyawan(nip,id_bagian,nama,email,jabatan,photo) VALUES(?,?,?,?,?,?)", [data.nip, data.id_bagian, nama, email, jabatan, photo], (err, result, field) => {
-                    if (!err)
-                        return res.json({code: 1, message: "Berhasil menambahkan data karyawan baru!"})
-                    else
-                        return res.json({code: 0, message: "Terjadi kesalahan, harap hubungi super admin!"})
-                })
-            }
+                //Pengecekan apakah password Null
+                if (password == null) {
+                    connect.query("INSERT INTO karyawan(nip,id_bagian,nama,email,jabatan,photo) VALUES(?,?,?,?,?,?)", [data.nip, data.id_bagian, nama, email, jabatan, photo], (err, result, field) => {
+                        if (!err)
+                            return res.json({code: 1, message: "Berhasil menambahkan data karyawan baru!"})
+                        else
+                            return res.json({code: 0, message: "Terjadi kesalahan, harap hubungi super admin!"})
+                    })
+                } else {
+                    connect.query("INSERT INTO karyawan(nip,id_bagian,nama,email,jabatan,photo,password) VALUES(?,?,?,?,?,?,PASSWORD(?))", [data.nip, data.id_bagian, nama, email, jabatan, photo, password], (err, result, field) => {
+                        if (!err)
+                            return res.json({code: 1, message: "Berhasil menambahkan data karyawan baru!"})
+                        else
+                            return res.json({code: 0, message: "Terjadi kesalahan, harap hubungi super admin!"})
+                    })
+                } //endif password
+            } //endif pengecekan nip
         });
     } catch (e) {
         console.log(e)
@@ -129,6 +146,7 @@ const updateKaryawan = async (req, res) => {
     let photo = null;
     let alamat = null;
     let nomor_kontak = null;
+    let password = null;
     //
     if (req.body.nama)
         nama = data.nama;
@@ -142,14 +160,29 @@ const updateKaryawan = async (req, res) => {
         alamat = data.alamat;
     if (req.body.nomor_kontak)
         nomor_kontak = data.nomor_kontak;
+    if (req.body.password)
+        password = data.password
     //
     let connect = DB.config;
-    connect.query("UPDATE karyawan SET id_bagian = ?, nama = ?, email = ?, alamat = ?, nomor_kontak = ?, jabatan = ?, photo = ? WHERE nip = ?", [data.id_bagian, nama, email, alamat, nomor_kontak, jabatan, photo, data.nip], (err, result, field) => {
-        if (!err)
-            return res.json({code: 1, message: "Berhasil memperbarui data karyawan!"})
-        else
-            return res.json({code: 0, message: "Terjadi kesalahan, harap hubungi super admin!"})
-    })
+    try {
+        if (password == null) {
+            connect.query("UPDATE karyawan SET id_bagian = ?, nama = ?, email = ?, alamat = ?, nomor_kontak = ?, jabatan = ?, photo = ? WHERE nip = ?", [data.id_bagian, nama, email, alamat, nomor_kontak, jabatan, photo, data.nip], (err, result, field) => {
+                if (!err)
+                    return res.json({code: 1, message: "Berhasil memperbarui data karyawan!"})
+                else
+                    return res.json({code: 0, message: "Terjadi kesalahan, harap hubungi super admin!"})
+            })
+        } else {
+            connect.query("UPDATE karyawan SET id_bagian = ?, nama = ?, email = ?, alamat = ?, nomor_kontak = ?, jabatan = ?, photo = ?, password = PASSWORD(?) WHERE nip = ?", [data.id_bagian, nama, email, alamat, nomor_kontak, jabatan, photo, password, data.nip], (err, result, field) => {
+                if (!err)
+                    return res.json({code: 1, message: "Berhasil memperbarui data karyawan!"})
+                else
+                    return res.json({code: 0, message: "Terjadi kesalahan, harap hubungi super admin!"})
+            })
+        }
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 const getKaryawan = async (req, res) => {

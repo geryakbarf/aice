@@ -5,10 +5,11 @@ var app = new Vue({
             nip: null,
             id_bagian: 0,
             nama: null,
-            email: null,
+            email: "",
             jabatan: 0,
             photo: null,
-            id_divisi: 0
+            id_divisi: 0,
+            password : null
         }, //endform
         bagian: [],
         divisi: []
