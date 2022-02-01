@@ -19,7 +19,7 @@
                 </a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="/hr/logout" class="nav-link">Logout</a>
+                <a href="/kpi/logout" class="nav-link">Logout</a>
             </li>
         </ul>
     </nav>
@@ -210,15 +210,15 @@
 </footer>
 <%- include('./partials/footer.html') %>
 <script>
-    let idDivisi = <%= result[0].id_divisi %>;
-    let nipKaryawan = <%= result[0].nip %>;
-    let idPenilaian = <%= idNilai %>;
+    let idDivisi = <%= result[0].id_divisi % >;
+    let nipKaryawan = <%= result[0].nip % >;
+    let idPenilaian = <%= idNilai % >;
 </script>
 <script type="application/javascript">
     var app = new Vue({
         el: '#form-penilaian',
         data: {
-            kpi : [],
+            kpi: [],
             kompetensi: [],
             form: {
                 id: '',

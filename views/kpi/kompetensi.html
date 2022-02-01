@@ -18,7 +18,7 @@
                 </a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="/hr/logout" class="nav-link">Logout</a>
+                <a href="/kpi/logout" class="nav-link">Logout</a>
             </li>
         </ul>
     </nav>
@@ -32,7 +32,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-2" style="float: right; margin-right: 10px">
-                        <a href="/hr/tambah-kompetensi">
+                        <a href="/kpi/tambah-kompetensi">
                             <button type="button" class="btn btn-block btn-primary">Tambah Data</button>
                         </a>
                     </div><!-- /.col -->
@@ -69,7 +69,7 @@
                                         <td><%= i; %></td>
                                         <td><%= data.divisi; %></td>
                                         <td><%= data.bagian; %></td>
-                                        <td><a href="/hr/edit-kompetensi/<%= data.id_divisi %>/<%= data.divisi %>/<%= data.id_bagian %>/<%= data.bagian %>">
+                                        <td><a href="/kpi/edit-kompetensi/<%= data.id_divisi %>/<%= data.divisi %>/<%= data.id_bagian %>/<%= data.bagian %>">
                                             <button type="button" class="btn btn-block btn-primary">Edit</button>
                                         </a></td>
                                     </tr>

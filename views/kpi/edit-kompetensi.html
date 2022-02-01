@@ -19,7 +19,7 @@
                 </a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="/hr/logout" class="nav-link">Logout</a>
+                <a href="/kpi/logout" class="nav-link">Logout</a>
             </li>
         </ul>
     </nav>
@@ -196,7 +196,7 @@
                         setTimeout(() => {
                             let context = this
                             window.removeEventListener('beforeunload', context.leaving, true)
-                            window.location = "/hr/kompetensi"
+                            window.location = "/kpi/kompetensi"
                         }, 1000)
                     } else
                         toastr.error(data.message)

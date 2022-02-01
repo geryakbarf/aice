@@ -333,7 +333,7 @@ const loginKPI = async (req, res) => {
                 return res.json({code: 0, message: "Alamat email tidak terdaftar!"})
         });
         //Pengecekan akun
-        connect.query("SELECT karyawan.nip, karyawan.nama, karyawan.email, karyawan.photo, divisi.id FROM karyawan JOIN bagian ON bagian.id = karyawan.id_bagian JOIN divisi ON bagian.id_divisi = divisi.id WHERE karyawan.email = ? AND karyawan.password = PASSWORD(?)", [email, password], (err, result, field) => {
+        connect.query("SELECT karyawan.nip, karyawan.nama, karyawan.email, karyawan.photo, divisi.id, divisi.nama AS divisi FROM karyawan JOIN bagian ON bagian.id = karyawan.id_bagian JOIN divisi ON bagian.id_divisi = divisi.id WHERE karyawan.email = ? AND karyawan.password = PASSWORD(?)", [email, password], (err, result, field) => {
             if (result.length > 0) {
                 req.session.isKPIAuthenticated = true;
                 req.session.nipKPI = result[0].nip;
@@ -341,6 +341,7 @@ const loginKPI = async (req, res) => {
                 req.session.namaKPI = result[0].nama;
                 req.session.photoKPI = result[0].photo;
                 req.session.divisiKPI = result[0].id;
+                req.session.namaDivisi = result[0].divisi;
                 return res.json({code: 1, message: "Berhasil login!"})
             } else
                 return res.json({code: 0, message: "Terjadi kesalahan!"})

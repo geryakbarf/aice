@@ -194,7 +194,7 @@ router.get("/edit-kompetensi/:id_divisi/:divisi/:id_bagian/:bagian", (req, res) 
     const namaBagian = req.params.bagian
     const photo = "http://localhost:3000/assets/uploads" + req.session.photoHR;
     const nama = req.session.namaHR;
-    const routePath = "/kpi";
+    const routePath = "/kompetensi";
     const loadCSS = [
         {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"}
     ];

@@ -19,7 +19,7 @@
                 </a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="/hr/logout" class="nav-link">Logout</a>
+                <a href="/kpi/logout" class="nav-link">Logout</a>
             </li>
         </ul>
     </nav>
@@ -48,10 +48,9 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <label>Dari Divisi Mana ?</label>
-                                    <select class="form-control" name="id_divisi" id="id_divisi"
-                                            v-on:change="loadBagian($event)" required>
-                                        <option value="0" disabled selected>Pilih Dari Divisi Mana</option>
-                                        <option v-bind:value="data.id" v-for="data in divisi">{{data.nama}}
+                                    <select class="form-control" name="id_divisi" id="id_divisi">
+                                        <option value="0" disabled>Pilih Dari Divisi Mana</option>
+                                        <option selected value="<%= idDivisi %>"><%= namaDivisi %>
                                         </option>
                                     </select>
                                 </div>
@@ -125,6 +124,9 @@
 </footer>
 <%- include('./partials/footer.html') %>
 <script type="application/javascript">
+    let idDivisi = "<%= idDivisi %>";
+</script>
+<script type="application/javascript">
     var app = new Vue({
         el: '#form-kompetensi',
         data: {
@@ -136,19 +138,9 @@
             bagian: []
         },
         methods: {
-            loadDivisi: async function () {
+            loadBagian: async function () {
                 try {
-                    let res = await fetch('/api/divisi/')
-                    let data = await res.json()
-                    this.divisi = data.data
-                } catch (e) {
-                    console.log(e)
-                }
-            },
-            loadBagian: async function (event) {
-                try {
-                    let id = event.target.value
-                    let res = await fetch(`/api/get-bagian/${id}`);
+                    let res = await fetch(`/api/get-bagian/${idDivisi}`);
                     let data = await res.json();
                     this.bagian = data;
                 } catch (err) {
@@ -202,7 +194,7 @@
                         setTimeout(() => {
                             let context = this
                             window.removeEventListener('beforeunload', context.leaving, true)
-                            window.location = "/hr/kompetensi"
+                            window.location = "/kpi/kompetensi"
                         }, 1000)
                     } else
                         toastr.error(data.message)
@@ -213,7 +205,8 @@
             }
         },
         mounted() {
-            this.loadDivisi()
+            this.loadBagian()
+            this.form.id_divisi = idDivisi
         }
     })
 </script>

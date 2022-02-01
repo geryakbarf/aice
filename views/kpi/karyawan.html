@@ -18,7 +18,7 @@
                 </a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="/hr/logout" class="nav-link">Logout</a>
+                <a href="/kpi/logout" class="nav-link">Logout</a>
             </li>
         </ul>
     </nav>
@@ -30,13 +30,7 @@
         <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-2" style="float: right; margin-right: 10px">
-                        <a href="/hr/tambah-karyawan">
-                            <button type="button" class="btn btn-block btn-primary">Tambah Data</button>
-                        </a>
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
+
             </div><!-- /.container-fluid -->
         </div>
         <!-- /.content-header -->
@@ -97,6 +91,7 @@
 <%- include('./partials/footer.html') %>
 <script type="application/javascript">
     let idDivisi = "<%= divisi %>";
+    let nipAdmin = "<%= nip %>";
 </script>
 <script type="application/javascript">
     var app = new Vue({
@@ -107,12 +102,16 @@
         methods: {
             validasi: async function (nip) {
                 try {
-                    const res = await fetch(`/api/penilaian/validasi/${nip}`)
-                    const data = await res.json()
-                    if (data.code === 0)
-                        toastr.error(data.message)
-                    else
-                        window.location.href = "/kpi/penilaian/" + nip
+                    if (nip === nipAdmin)
+                        toastr.error("Maaf, anda tidak bisa menilai akun anda sendiri!")
+                    else {
+                        const res = await fetch(`/api/penilaian/validasi/${nip}`)
+                        const data = await res.json()
+                        if (data.code === 0)
+                            toastr.error(data.message)
+                        else
+                            window.location.href = "/kpi/penilaian/" + nip
+                    }
                 } catch (e) {
                     console.log(e)
                 }
