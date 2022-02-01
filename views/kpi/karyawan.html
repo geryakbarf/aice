@@ -1,0 +1,150 @@
+<%- include('./partials/header.html') %>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <!-- Left navbar links -->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            </li>
+        </ul>
+
+        <!-- Right navbar links -->
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                </a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+                <a href="/hr/logout" class="nav-link">Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+    <%- include('./partials/left-navbar.html') %>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-2" style="float: right; margin-right: 10px">
+                        <a href="/hr/tambah-karyawan">
+                            <button type="button" class="btn btn-block btn-primary">Tambah Data</button>
+                        </a>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+
+        <!-- Main content -->
+        <section class="content" id="form-karyawan">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Data Karyawan - Karyawan Aice</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <table id="example2" class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>NIP</th>
+                                        <th>Nama</th>
+                                        <th>Divisi</th>
+                                        <th>Bagian</th>
+                                        <th>Jabatan</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="(data,index) in karyawan">
+                                        <td>{{data.nip}}</td>
+                                        <td>{{data.nama}}</td>
+                                        <td>{{data.divisi}}</td>
+                                        <td>{{data.bagian}}</td>
+                                        <td>{{data.jabatan}}</td>
+                                        <td>
+                                            <button v-on:click="validasi(data.nip)" type="button"
+                                                    class="btn btn-block btn-primary">Nilai
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<footer class="main-footer">
+    <strong>Copyright &copy; 2021 Gery Akbar Fauzi - UNIKOM</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+        <b>Version</b> 1.0
+    </div>
+</footer>
+</body>
+<%- include('./partials/footer.html') %>
+<script type="application/javascript">
+    let idDivisi = "<%= divisi %>";
+</script>
+<script type="application/javascript">
+    var app = new Vue({
+        el: '#form-karyawan',
+        data: {
+            karyawan: []
+        },
+        methods: {
+            validasi: async function (nip) {
+                try {
+                    const res = await fetch(`/api/penilaian/validasi/${nip}`)
+                    const data = await res.json()
+                    if (data.code === 0)
+                        toastr.error(data.message)
+                    else
+                        window.location.href = "/kpi/penilaian/" + nip
+                } catch (e) {
+                    console.log(e)
+                }
+            },
+            loadKaryawan: async function () {
+                try {
+                    const res = await fetch(`/api/karyawan/get-divisi-karyawan/${idDivisi}`)
+                    const data = await res.json()
+                    this.karyawan = data.data
+                    $('#example2').DataTable().destroy()
+                    setTimeout(() => {
+                        this.$nextTick(function () {
+                            $('#example2').DataTable({
+                                "destroy": true,
+                                "retrieve": true,
+                                "paging": true,
+                                "lengthChange": true,
+                                "searching": true,
+                                "ordering": true,
+                                "info": true,
+                                "autoWidth": false,
+                                "responsive": true,
+                            });
+                        })
+                    }, 300)
+                } catch (e) {
+
+                }
+            },
+        },
+        mounted() {
+            this.loadKaryawan()
+        }
+    })
+</script>

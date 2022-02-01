@@ -309,6 +309,47 @@ const getAllKaryawan = async (req, res) => {
     }
 }
 
+const getDivisiKaryawan = async (req, res) => {
+    let connect = DB.config
+    let id = req.params.id
+    try {
+        connect.query("SELECT karyawan.nip, karyawan.nama, divisi.nama AS divisi, bagian.nama AS bagian, karyawan.jabatan FROM karyawan JOIN bagian ON bagian.id = karyawan.id_bagian JOIN divisi ON bagian.id_divisi = divisi.id WHERE divisi.id = ? ORDER BY karyawan.nip ASC", [id], (error, result) => {
+            return res.json({
+                data: result
+            })
+        })
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+const loginKPI = async (req, res) => {
+    let connect = DB.config
+    let {email, password} = req.body
+    try {
+        //Pengecekan Email
+        connect.query("SELECT * FROM karyawan WHERE email = ?", [email], (err, result, field) => {
+            if (result.length <= 0)
+                return res.json({code: 0, message: "Alamat email tidak terdaftar!"})
+        });
+        //Pengecekan akun
+        connect.query("SELECT karyawan.nip, karyawan.nama, karyawan.email, karyawan.photo, divisi.id FROM karyawan JOIN bagian ON bagian.id = karyawan.id_bagian JOIN divisi ON bagian.id_divisi = divisi.id WHERE karyawan.email = ? AND karyawan.password = PASSWORD(?)", [email, password], (err, result, field) => {
+            if (result.length > 0) {
+                req.session.isKPIAuthenticated = true;
+                req.session.nipKPI = result[0].nip;
+                req.session.emailKPI = result[0].email;
+                req.session.namaKPI = result[0].nama;
+                req.session.photoKPI = result[0].photo;
+                req.session.divisiKPI = result[0].id;
+                return res.json({code: 1, message: "Berhasil login!"})
+            } else
+                return res.json({code: 0, message: "Terjadi kesalahan!"})
+        });
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 module.exports = {
     renderKaryawanPage,
     tambahKaryawan,
@@ -318,5 +359,7 @@ module.exports = {
     loginKaryawan,
     registerKaryawan,
     loginHR,
-    getAllKaryawan
+    getAllKaryawan,
+    loginKPI,
+    getDivisiKaryawan
 }

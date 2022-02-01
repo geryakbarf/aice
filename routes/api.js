@@ -26,7 +26,9 @@ router.post('/tambah-karyawan', Karyawan.tambahKaryawan);
 router.get('/get-karyawan/:nip', Karyawan.getKaryawan);
 router.put('/update-karyawan', Karyawan.updateKaryawan);
 router.post('/login/hr', Karyawan.loginHR)
+router.post('/login/kpi', Karyawan.loginKPI)
 router.get('/karyawan/get-all-karyawan', Karyawan.getAllKaryawan)
+router.get('/karyawan/get-divisi-karyawan/:id', Karyawan.getDivisiKaryawan)
 
 //Area API Main Absensi
 router.get('/main-absensi', Absensi.getMainAbsensi)
