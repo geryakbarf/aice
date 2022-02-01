@@ -217,7 +217,7 @@ const login = async (req, res) => {
                 return res.render('admin/login', {title: "Admin - Login", loadJS, error: 1})
         });
         //Pengecekan akun
-        connect.query("SELECT * FROM karyawan WHERE email = ? AND password = PASSWORD(?)", [email, password], (err, result, field) => {
+        connect.query("SELECT * FROM karyawan WHERE email = ? AND password = PASSWORD(?) AND is_admin = ?", [email, password, "true"], (err, result, field) => {
             if (result.length > 0) {
                 req.session.isAuthenticated = true;
                 req.session.nipAdmin = result[0].nip;
