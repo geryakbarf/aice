@@ -59,5 +59,8 @@ router.get('/penilaian/:id', Penilaian.getOnePenilaian)
 router.get('/penilaian/kpi/:id', Penilaian.getPenilaianKPI)
 router.get('/penilaian/kompetensi/:id', Penilaian.getPenilaianKompetensi)
 router.get('/penilaian/validasi/:nip', Penilaian.validasiPenilaian)
+router.get('/penilaian/statistik/average', Penilaian.getAverageKPI)
+router.get('/penilaian/statistik/tertinggi', Penilaian.getHighestKPI)
+router.get('/penilaian/statistik/terendah', Penilaian.getLowestKPI)
 
 module.exports = router;

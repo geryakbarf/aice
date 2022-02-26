@@ -114,10 +114,46 @@ const validasiPenilaian = async (req, res) => {
     }
 }
 
+const getAverageKPI = async (req,res) => {
+    let connect = DB.config
+    try{
+        connect.query("SELECT AVG(kesimpulan_skor) AS average FROM penilaian WHERE MONTH(tanggal) = MONTH(CURRENT_DATE()) AND YEAR(tanggal) = YEAR(CURRENT_DATE())",(error,result) => {
+            return res.json({data: result[0]})
+        })
+    }catch (e) {
+        console.log(e)
+    }
+}
+
+const getHighestKPI = async (req,res) => {
+    let connect = DB.config
+    try {
+        connect.query("SELECT kesimpulan_skor, karyawan.nama FROM penilaian JOIN karyawan ON karyawan.nip = penilaian.nip WHERE MONTH(tanggal) = MONTH(CURRENT_DATE()) AND YEAR(tanggal) = YEAR(CURRENT_DATE()) ORDER BY kesimpulan_skor DESC", (error,result) => {
+            return res.json({data: result[0]})
+        })
+    }catch (e) {
+        console.log(e)
+    }
+}
+
+const getLowestKPI = async (req,res) => {
+    let connect = DB.config
+    try {
+        connect.query("SELECT kesimpulan_skor, karyawan.nama FROM penilaian JOIN karyawan ON karyawan.nip = penilaian.nip WHERE MONTH(tanggal) = MONTH(CURRENT_DATE()) AND YEAR(tanggal) = YEAR(CURRENT_DATE()) ORDER BY kesimpulan_skor ASC", (error,result) => {
+            return res.json({data: result[0]})
+        })
+    }catch (e) {
+        console.log(e)
+    }
+}
+
 module.exports = {
     insertPenialain,
     getOnePenilaian,
     getPenilaianKPI,
     getPenilaianKompetensi,
-    validasiPenilaian
+    validasiPenilaian,
+    getAverageKPI,
+    getHighestKPI,
+    getLowestKPI
 }

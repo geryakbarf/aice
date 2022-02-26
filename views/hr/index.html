@@ -60,7 +60,8 @@
                             <div class="icon">
                                 <i class="ion ion-bag"></i>
                             </div>
-                            <a href="/hr/karyawan" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="/hr/karyawan" class="small-box-footer">More info <i
+                                    class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                     <!-- ./col -->
@@ -68,14 +69,14 @@
                         <!-- small box -->
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>53<sup style="font-size: 20px">%</sup></h3>
+                                <h3>{{averageKPI}}</h3>
 
-                                <p>Bounce Rate</p>
+                                <p>Rata - Rata KPI</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-stats-bars"></i>
                             </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="/hr/penilaian" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                     <!-- ./col -->
@@ -83,14 +84,14 @@
                         <!-- small box -->
                         <div class="small-box bg-warning">
                             <div class="inner">
-                                <h3>44</h3>
+                                <h3>{{highestKPI}}</h3>
 
-                                <p>User Registrations</p>
+                                <p>KPI Tertinggi - {{highestKPIName}}</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-person-add"></i>
                             </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="/hr/penilaian" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                     <!-- ./col -->
@@ -98,14 +99,14 @@
                         <!-- small box -->
                         <div class="small-box bg-danger">
                             <div class="inner">
-                                <h3>65</h3>
+                                <h3>{{lowestKPI}}</h3>
 
-                                <p>Unique Visitors</p>
+                                <p>KPI Terendah - {{lowestKPIName}}</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-pie-graph"></i>
                             </div>
-                            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="/hr/penilaian" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                     <!-- ./col -->
@@ -129,17 +130,43 @@
     var app = new Vue({
         el: '#index-hr',
         data: {
-            jumlahKaryawan: ''
+            jumlahKaryawan: '',
+            averageKPI: '',
+            highestKPI: '',
+            highestKPIName: '',
+            lowestKPI: '',
+            lowestKPIName: ''
         },
         methods: {
-          getJumlahKaryawan: async function(){
-            const res = await fetch('/api/karyawan/jumlah')
-            const data = await res.json()
-            this.jumlahKaryawan = data.data.jumlah_karyawan
-          }
+            getJumlahKaryawan: async function () {
+                const res = await fetch('/api/karyawan/jumlah')
+                const data = await res.json()
+                this.jumlahKaryawan = data.data.jumlah_karyawan
+            },
+            getRataRataKPI: async function () {
+                const res = await fetch('/api/penilaian/statistik/average')
+                const data = await res.json()
+                console.log(data)
+                this.averageKPI = data.data.average
+            },
+            getHighestKPI: async function () {
+                const res = await fetch('/api/penilaian/statistik/tertinggi')
+                const data = await res.json()
+                this.highestKPI = data.data.kesimpulan_skor
+                this.highestKPIName = data.data.nama
+            },
+            getLowesttKPI: async function () {
+                const res = await fetch('/api/penilaian/statistik/terendah')
+                const data = await res.json()
+                this.lowestKPI = data.data.kesimpulan_skor
+                this.lowestKPIName = data.data.nama
+            }
         },
         mounted() {
             this.getJumlahKaryawan()
+            this.getRataRataKPI()
+            this.getHighestKPI()
+            this.getLowesttKPI()
         }
     })
 </script>
