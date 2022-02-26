@@ -116,7 +116,9 @@ router.get("/", (req, res) => {
         {src: "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"},
         {src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"},
         {src: "https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js"},
-        {src: "https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"}
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/js/tempusdominus-bootstrap-4.min.js"},
+        {src: "https://code.jquery.com/jquery-3.6.0.min.js"},
+        {src: "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"},
     ];
 
     const loadCSS = [

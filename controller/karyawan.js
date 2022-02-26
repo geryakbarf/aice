@@ -351,6 +351,17 @@ const loginKPI = async (req, res) => {
     }
 }
 
+const getJumlahKaryawan = async (req, res) => {
+    let connect = DB.config
+    try {
+        connect.query("SELECT COUNT(nip) AS jumlah_karyawan FROM karyawan", (error, result) => {
+            return res.json({data: result[0]})
+        })
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 module.exports = {
     renderKaryawanPage,
     tambahKaryawan,
@@ -362,5 +373,6 @@ module.exports = {
     loginHR,
     getAllKaryawan,
     loginKPI,
-    getDivisiKaryawan
+    getDivisiKaryawan,
+    getJumlahKaryawan
 }
