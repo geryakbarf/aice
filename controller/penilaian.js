@@ -114,35 +114,46 @@ const validasiPenilaian = async (req, res) => {
     }
 }
 
-const getAverageKPI = async (req,res) => {
+const getAverageKPI = async (req, res) => {
     let connect = DB.config
-    try{
-        connect.query("SELECT AVG(kesimpulan_skor) AS average FROM penilaian WHERE MONTH(tanggal) = MONTH(CURRENT_DATE()) AND YEAR(tanggal) = YEAR(CURRENT_DATE())",(error,result) => {
+    try {
+        connect.query("SELECT AVG(kesimpulan_skor) AS average FROM penilaian WHERE MONTH(tanggal) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(tanggal) = YEAR(CURRENT_DATE())", (error, result) => {
             return res.json({data: result[0]})
         })
-    }catch (e) {
+    } catch (e) {
         console.log(e)
     }
 }
 
-const getHighestKPI = async (req,res) => {
+const getHighestKPI = async (req, res) => {
     let connect = DB.config
     try {
-        connect.query("SELECT kesimpulan_skor, karyawan.nama FROM penilaian JOIN karyawan ON karyawan.nip = penilaian.nip WHERE MONTH(tanggal) = MONTH(CURRENT_DATE()) AND YEAR(tanggal) = YEAR(CURRENT_DATE()) ORDER BY kesimpulan_skor DESC", (error,result) => {
+        connect.query("SELECT kesimpulan_skor, karyawan.nama FROM penilaian JOIN karyawan ON karyawan.nip = penilaian.nip WHERE MONTH(tanggal) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(tanggal) = YEAR(CURRENT_DATE()) ORDER BY kesimpulan_skor DESC", (error, result) => {
             return res.json({data: result[0]})
         })
-    }catch (e) {
+    } catch (e) {
         console.log(e)
     }
 }
 
-const getLowestKPI = async (req,res) => {
+const getLowestKPI = async (req, res) => {
     let connect = DB.config
     try {
-        connect.query("SELECT kesimpulan_skor, karyawan.nama FROM penilaian JOIN karyawan ON karyawan.nip = penilaian.nip WHERE MONTH(tanggal) = MONTH(CURRENT_DATE()) AND YEAR(tanggal) = YEAR(CURRENT_DATE()) ORDER BY kesimpulan_skor ASC", (error,result) => {
+        connect.query("SELECT kesimpulan_skor, karyawan.nama FROM penilaian JOIN karyawan ON karyawan.nip = penilaian.nip WHERE MONTH(tanggal) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(tanggal) = YEAR(CURRENT_DATE()) ORDER BY kesimpulan_skor ASC", (error, result) => {
             return res.json({data: result[0]})
         })
-    }catch (e) {
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+const getStatistikKPI = async (req, res) => {
+    let connect = DB.config
+    try {
+        connect.query("SELECT AVG(kesimpulan_skor) AS statistik FROM penilaian WHERE YEAR(tanggal) = YEAR(CURRENT_DATE()) GROUP BY MONTH(tanggal) ASC", (error, result) => {
+            return res.json({data: result})
+        })
+    } catch (e) {
         console.log(e)
     }
 }
@@ -155,5 +166,6 @@ module.exports = {
     validasiPenilaian,
     getAverageKPI,
     getHighestKPI,
-    getLowestKPI
+    getLowestKPI,
+    getStatistikKPI
 }

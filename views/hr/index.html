@@ -111,6 +111,9 @@
                     </div>
                     <!-- ./col -->
                 </div>
+                <div class="row">
+                    <canvas id="canvas" style="moz-user-select: none; webkit-user-select: none; ms-user-select: none;"/>
+                </div>
                 <!-- /.row -->
 
             </div>
@@ -147,19 +150,63 @@
                 const res = await fetch('/api/penilaian/statistik/average')
                 const data = await res.json()
                 console.log(data)
-                this.averageKPI = data.data.average
+                this.averageKPI = data.data.average.toFixed(2);
             },
             getHighestKPI: async function () {
                 const res = await fetch('/api/penilaian/statistik/tertinggi')
                 const data = await res.json()
-                this.highestKPI = data.data.kesimpulan_skor
+                this.highestKPI = data.data.kesimpulan_skor.toFixed(2);
                 this.highestKPIName = data.data.nama
             },
             getLowesttKPI: async function () {
                 const res = await fetch('/api/penilaian/statistik/terendah')
                 const data = await res.json()
-                this.lowestKPI = data.data.kesimpulan_skor
+                this.lowestKPI = data.data.kesimpulan_skor.toFixed(2);
                 this.lowestKPIName = data.data.nama
+            },
+            loadStatistic: async function (){
+                const labels = [
+                    'Januari',
+                    'Februari',
+                    'Maret',
+                    'April',
+                    'Mei',
+                    'Juni',
+                    'Juli',
+                    'Agustus',
+                    'September',
+                    'Oktober',
+                    'November',
+                    'Desember',
+                ];
+
+                let array = [];
+                const res = await fetch('/api/penilaian/statistik/full')
+                const json = await res.json()
+                for (let i =0; i < json.data.length; i++){
+                    array.push(json.data[i].statistik)
+                }
+
+                const data = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Rata - Rata KPI',
+                        backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: array,
+                    }]
+                };
+
+                const config = {
+                    type: 'bar',
+                    data: data,
+                    options: {}
+                };
+
+                const myChart = new Chart(
+                    document.getElementById('canvas'),
+                    config
+                );
             }
         },
         mounted() {
@@ -167,6 +214,7 @@
             this.getRataRataKPI()
             this.getHighestKPI()
             this.getLowesttKPI()
+            this.loadStatistic()
         }
     })
 </script>
