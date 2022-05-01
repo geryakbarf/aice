@@ -158,6 +158,18 @@ const getStatistikKPI = async (req, res) => {
     }
 }
 
+const getEmployeStatistikKPI = async (req, res) => {
+    let connect = DB.config
+    let {nip} = req.params
+    try {
+        connect.query("SELECT AVG(kesimpulan_skor) AS statistik FROM penilaian WHERE YEAR(tanggal) = YEAR(CURRENT_DATE()) AND nip = ? GROUP BY MONTH(tanggal) ASC", [nip], (error, result) => {
+            return res.json({data: result})
+        })
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 module.exports = {
     insertPenialain,
     getOnePenilaian,
@@ -167,5 +179,6 @@ module.exports = {
     getAverageKPI,
     getHighestKPI,
     getLowestKPI,
-    getStatistikKPI
+    getStatistikKPI,
+    getEmployeStatistikKPI
 }

@@ -63,5 +63,6 @@ router.get('/penilaian/statistik/average', Penilaian.getAverageKPI)
 router.get('/penilaian/statistik/tertinggi', Penilaian.getHighestKPI)
 router.get('/penilaian/statistik/terendah', Penilaian.getLowestKPI)
 router.get('/penilaian/statistik/full', Penilaian.getStatistikKPI)
+router.get('/penilaian/statistik/full/:nip', Penilaian.getEmployeStatistikKPI)
 
 module.exports = router;

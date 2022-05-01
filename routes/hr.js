@@ -427,6 +427,46 @@ router.get('/penilaian/detail/:id/:nip', (req, res) => {
     });
 })
 
+router.get('/statistik/:nip', (req, res) => {
+    const routePath = "/karyawan";
+    const photo = "http://localhost:3000/assets/uploads" + req.session.photoKPI;
+    const nama = req.session.namaKPI;
+    const divisi = req.session.divisiKPI
+    const nip = req.session.nipKPI
+    const id = req.params.nip
+    const loadCSS = [
+        {src: "https://cdn.datatables.net/1.11.2/css/dataTables.bootstrap4.min.css"},
+        {src: "https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap4.min.css"},
+        {src: "https://cdn.datatables.net/buttons/2.0.0/css/buttons.bootstrap4.min.css"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"}
+    ];
+    const loadJS = [
+        {src: "https://code.jquery.com/jquery-3.6.0.min.js"},
+        {src: "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0-rc/js/adminlte.min.js"},
+        {src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"},
+        {src: "https://cdn.datatables.net/1.11.2/js/jquery.dataTables.min.js"},
+        {src: "https://cdn.datatables.net/1.11.2/js/dataTables.bootstrap4.min.js"},
+        {src: "https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.js"},
+        {src: "https://cdn.datatables.net/responsive/2.2.9/js/responsive.bootstrap4.min.js"},
+        {src: "https://cdn.datatables.net/buttons/2.0.0/js/buttons.bootstrap4.min.js"},
+        {src: "https://cdn.datatables.net/buttons/2.0.0/js/dataTables.buttons.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"},
+        {src: "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"},
+    ];
+    return res.render('hr/statistik', {
+        title: "KPI - Statistik",
+        loadJS,
+        loadCSS,
+        routePath,
+        nama,
+        photo,
+        divisi,
+        nip,
+        id
+    });
+})
+
 router.get('/logout', (req, res) => {
     delete req.session.isHRAuthenticated
     delete req.session.nipHR
